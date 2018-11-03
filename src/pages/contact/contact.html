@@ -1,17 +1,35 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Contact
+      Hello Precious Contributor!
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
+<ion-content >
+  <ion-list [class]="inputFieldClass">
+    <ion-list-header>Tell Us About Yourself</ion-list-header>
+
     <ion-item>
-      <ion-icon name="ionic" item-start></ion-icon>
-      @ionicframework
+      <ion-label floating>Name</ion-label>
+      <ion-input type="text" [(ngModel)] = "userName" #username></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Cell/Phone</ion-label>
+      <ion-input type="tel" [(ngModel)] = "phone"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Email</ion-label>
+      <ion-input type="email" [(ngModel)] = "email"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Organization</ion-label>
+      <ion-input type="text" [(ngModel)] = "organization"></ion-input>
     </ion-item>
   </ion-list>
+
+  <div padding>
+    <button ion-button block #submitbutton (click)="saveUserInfo()">{{buttonText}}</button>
+  </div>
 </ion-content>
