@@ -17,6 +17,13 @@ const ENABLE_INPUT_FIELD = "page-contact enabled";
   selector: 'page-contact',
   templateUrl: 'contact.html'
 })
+
+/*
+* Main Functions Are:
+* 1. Constructor
+* 2. SaveUserInfo
+* Rest are utilities that provide support.
+* */
 export class ContactPage {
   @ViewChild("submitbutton") submitButton;
 
@@ -26,25 +33,6 @@ export class ContactPage {
   userDetails: UserProfile = new UserProfile("", "", "", "");
 
   loader: any = null;
-
-
-
-  /*
-  * Dismisses the loading screen
-  * */
-  dismissLoading() {
-    this.loader.dismiss();
-  }
-/*
-* Creates and presents basic loading screen
-* */
-  presentLoading() {
-    this.loader = this.loadingCtrl.create({
-      content: "Please wait....",
-    });
-    this.loader.present();
-  }
-
 
   /*
   * Fetches data from storage and changes the view accordingly.
@@ -65,24 +53,6 @@ export class ContactPage {
       this.dismissLoading();
     });
   }
-
-
-/*
-* Enables the Input Field
-* */
-  enableEdit() {
-    this.inputFieldClass = ENABLE_INPUT_FIELD;
-    this.buttonText = BUTTON_SUBMIT;
-  }
-
-/*
-* Disables the Input Field
-* */
-  disableEdit() {
-    this.inputFieldClass = DISABLE_INPUT_FIELD;
-    this.buttonText = BUTTON_EDIT;
-  }
-
 
   /**
    * Condition among the three things:
@@ -114,6 +84,40 @@ export class ContactPage {
       }).present();
     }
   }
+
+
+  /*
+* Enables the Input Field
+* */
+  enableEdit() {
+    this.inputFieldClass = ENABLE_INPUT_FIELD;
+    this.buttonText = BUTTON_SUBMIT;
+  }
+
+  /*
+  * Disables the Input Field
+  * */
+  disableEdit() {
+    this.inputFieldClass = DISABLE_INPUT_FIELD;
+    this.buttonText = BUTTON_EDIT;
+  }
+
+  /*
+  * Dismisses the loading screen
+  * */
+  dismissLoading() {
+    this.loader.dismiss();
+  }
+  /*
+  * Creates and presents basic loading screen
+  * */
+  presentLoading() {
+    this.loader = this.loadingCtrl.create({
+      content: "Please wait....",
+    });
+    this.loader.present();
+  }
+
 
 
 }
