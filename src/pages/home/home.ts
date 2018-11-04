@@ -11,4 +11,9 @@ export class HomePage {
 
   }
 
+  deleteLocalCache(){
+    localStorage.clear();
+    console.log("local storage cleared");
+  }
+
 }

@@ -12,20 +12,20 @@
 
     <ion-item>
       <ion-label floating>Name</ion-label>
-      <ion-input type="text" [(ngModel)] = "userName" #username></ion-input>
+      <ion-input type="text" [(ngModel)] = "userDetails.userName" #username></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Cell/Phone</ion-label>
-      <ion-input type="tel" [(ngModel)] = "phone"></ion-input>
+      <ion-input type="tel" [(ngModel)] = "userDetails.phone"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating>Email</ion-label>
-      <ion-input type="email" [(ngModel)] = "email"></ion-input>
+      <ion-input type="email" [(ngModel)] = "userDetails.email"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating>Organization</ion-label>
-      <ion-input type="text" [(ngModel)] = "organization"></ion-input>
+      <ion-input type="text" [(ngModel)] = "userDetails.organization"></ion-input>
     </ion-item>
   </ion-list>
 

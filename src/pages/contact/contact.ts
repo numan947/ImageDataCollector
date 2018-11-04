@@ -1,13 +1,16 @@
 import {Component, ViewChild} from '@angular/core';
 import {AlertController, NavController} from 'ionic-angular';
 import {PersonalInfoProvider} from "../../providers/personal-info/personal-info";
-import { LoadingController } from 'ionic-angular';
+import {LoadingController} from 'ionic-angular';
+import {UserProfile} from "../../app/models/UserProfile";
 
 
-export const USERNAME = "username_info";
-export const EMAIL = "email_info";
-export const PHONE = "phone_info";
-export const ORGANZIATION = "oranization_info";
+// Button States
+const BUTTON_SUBMIT = "Submit";
+const BUTTON_EDIT = "Edit";
+//Input Field States
+const DISABLE_INPUT_FIELD = "page-contact disabled";
+const ENABLE_INPUT_FIELD = "page-contact enabled";
 
 
 @Component({
@@ -15,38 +18,26 @@ export const ORGANZIATION = "oranization_info";
   templateUrl: 'contact.html'
 })
 export class ContactPage {
- userName:String = "";
- phone:String = "";
- email:String = "";
- organization:String = "";
   @ViewChild("submitbutton") submitButton;
 
-  disableInputFieldClass:String = "page-contact disabled";
-  inputFieldClass:String = "";
+  buttonText: String = BUTTON_SUBMIT;
+  inputFieldClass: string = ENABLE_INPUT_FIELD;
 
-  buttonText:String = "Submit";
-  userDetailsIsSet:Boolean = false;
+  userDetails: UserProfile = new UserProfile("", "", "", "");
+
+  loader: any = null;
 
 
-  loader:any= null;
 
-  constructor(public navCtrl: NavController, private personalInfo:PersonalInfoProvider, private loadingCtrl:LoadingController,private alertCtrl:AlertController) {
-
-    this.presentLoading();
-    this.personalInfo.isInfoAvailable().then(promise=>{
-
-      console.log("Personal Info Details");
-      this.userDetailsIsSet = Boolean(promise);
-      this.updateState(promise);
-      this.dismissLoading();
-    });
-
-  }
-
-  dismissLoading()
-  {
+  /*
+  * Dismisses the loading screen
+  * */
+  dismissLoading() {
     this.loader.dismiss();
   }
+/*
+* Creates and presents basic loading screen
+* */
   presentLoading() {
     this.loader = this.loadingCtrl.create({
       content: "Please wait....",
@@ -54,53 +45,75 @@ export class ContactPage {
     this.loader.present();
   }
 
-  updateState(promise)
-  {
-    if(this.userDetailsIsSet){
-      this.buttonText = "Edit";
-      this.inputFieldClass = this.disableInputFieldClass;
-      this.userName =  promise.USERNAME;
-      this.email = promise.EMAIL;
-      this.phone = promise.PHONE;
-      this.organization = promise.ORGANZIATION;
-      //TODO: FETCH FROM DATABASE AND POPULATE
-    }
-    else
-      console.log("DO NOTHING");
+
+  /*
+  * Fetches data from storage and changes the view accordingly.
+  * */
+  constructor(public navCtrl: NavController, private personalInfo: PersonalInfoProvider, private loadingCtrl: LoadingController, private alertCtrl: AlertController) {
+    this.presentLoading();
+    this.personalInfo.getUserInfo().then(promise => {
+
+      if (promise)
+        this.userDetails = JSON.parse(promise);
+      console.log(promise, this.userDetails);
+
+      if (!this.userDetails.userName) {
+        this.enableEdit();
+      } else {
+        this.disableEdit();
+      }
+      this.dismissLoading();
+    });
   }
 
-  saveUserInfo(){
 
-    if(this.userName && this.inputFieldClass==this.disableInputFieldClass){
-      this.buttonText = "Submit";
-      this.inputFieldClass = "";
-      return;
-    }
+/*
+* Enables the Input Field
+* */
+  enableEdit() {
+    this.inputFieldClass = ENABLE_INPUT_FIELD;
+    this.buttonText = BUTTON_SUBMIT;
+  }
 
-    if(this.userName){ // at least a username is required
+/*
+* Disables the Input Field
+* */
+  disableEdit() {
+    this.inputFieldClass = DISABLE_INPUT_FIELD;
+    this.buttonText = BUTTON_EDIT;
+  }
+
+
+  /**
+   * Condition among the three things:
+   * 1. Enable Edit mode if information is available
+   * 2. Save Information
+   * 3. Show dialog if name is not given
+   * */
+  saveUserInfo() {
+    if (this.buttonText == BUTTON_EDIT) {
+      this.enableEdit();
+    } else if (this.userDetails.userName) { // at least a username is required
       this.presentLoading();
-      let dataToSave = {USERNAME:this.userName,EMAIL:this.email,PHONE:this.phone,ORGANZIATION:this.organization};
-      this.personalInfo.saveUserInfo(dataToSave).then(promise=>{
+      this.personalInfo.saveUserInfo(this.userDetails).then(promise => {
         console.log("Information Saved");
-        this.buttonText = "Edit";
-        this.inputFieldClass = this.disableInputFieldClass;
+        this.disableEdit();
         this.dismissLoading();
       })
-    }
-    else{
+    } else {
       this.alertCtrl.create({
-        title:"We Need You!",
-        subTitle:"Please Let Us Know Who You Are!"
+        title: "We Need You!",
+        subTitle: "Your name will be set as Anonymous, if no information is given."
       }).addButton({
-        text:"Ok"
+        text: "Ok"
       }).addButton({
-        text:"Set Anonymous",
-        handler:data=>{
-          this.userName = "Anonymous";
+        text: "Set Anonymous",
+        handler: data => {
+          this.userDetails.userName = "Anonymous";
         }
-      })
-        .present();
+      }).present();
     }
   }
+
 
 }

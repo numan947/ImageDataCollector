@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Storage} from "@ionic/storage";
+import {UserProfile} from "../../app/models/UserProfile";
 
 /*
   Generated class for the PersonalInfoProvider provider.
@@ -8,7 +9,7 @@ import {Storage} from "@ionic/storage";
   and Angular DI.
 */
 
-const PERSONALINFO = "personal_info";
+const PERSONALINFO = "personal_information";
 
 @Injectable()
 export class PersonalInfoProvider {
@@ -17,12 +18,12 @@ export class PersonalInfoProvider {
     console.log('Hello PersonalInfoProvider Provider');
   }
 
-  isInfoAvailable(){
+  getUserInfo(){
     return this.storage.get(PERSONALINFO);
   }
 
-  saveUserInfo(data:any){
-    return this.storage.set(PERSONALINFO,data);
+  saveUserInfo(data:UserProfile){
+    return this.storage.set(PERSONALINFO,JSON.stringify(data));
   }
 
 }
