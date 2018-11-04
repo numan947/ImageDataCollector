@@ -5,42 +5,73 @@ import {LoadingController} from 'ionic-angular';
 import {UserProfile} from "../../app/models/UserProfile";
 
 
-// Button States
+/**
+* This variable stores Submit state the Button can be in Personal Info Page.
+* */
 const BUTTON_SUBMIT = "Submit";
+/**
+* This variable stores Edit state the Button can be in Personal Info Page.
+* */
 const BUTTON_EDIT = "Edit";
 //Input Field States
+/**
+* This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
+* */
 const DISABLE_INPUT_FIELD = "page-contact disabled";
+/**
+* This Variable contains the css needed to make the Input fields in Personal Info Page enabled.
+* */
 const ENABLE_INPUT_FIELD = "page-contact enabled";
 
 
+/**
+ * This class handles the personal information of users.
+ * Basically, it takes the information from a user and store it in local storage.
+ * It provides Edit and Save system for the information.
+ * This class manages between EditMode and StaticMode of the html page.
+ * EditMode: Data can be edited and submitted.
+ * StaticMode: After Data is submitted, the view is disabled.
+ **/
 @Component({
   selector: 'page-contact',
   templateUrl: 'contact.html'
 })
-
-/*
-* Main Functions Are:
-* 1. Constructor
-* 2. SaveUserInfo
-* Rest are utilities that provide support.
-* */
 export class ContactPage {
-  @ViewChild("submitbutton") submitButton;
-
+  /**
+  * Data binding for the submit button in the html, so that we can change the text of the button dynamically.
+  * We change buttonText's value in between EditMode and SubmitMode.
+  * */
   buttonText: String = BUTTON_SUBMIT;
+  /**
+  * Data binding for the input field's css class, so that we can change it's css class dynamically depending on EditMode and StaticMode.
+  * */
   inputFieldClass: string = ENABLE_INPUT_FIELD;
 
+  /**
+  * Main model class that contains user information. Initialized as empty.
+  * */
   userDetails: UserProfile = new UserProfile("", "", "", "");
-
+  /**
+  * A loader object that's used to initiate and show loading screen.
+  * */
   loader: any = null;
 
-  /*
-  * Fetches data from storage and changes the view accordingly.
+  /**
+  * This Constructor shows the loading screen.
+  * Then it fetches the user information from the local storage using the PersonalInfoProvider object.
+  * After the request is completed, it parses the data into local userDetails variable, which using data binding updates the view if necessary.
+  * After that, the EditMode or StaticMode is selected depending on whether userName property is set in userDetails.
+  * Loading screen is dismissed.
+  * @param{PersonalInfoProvider}personalInfo This is the storage provider object that handles the connection with local storage.
+  * @param{LoadingController}loadingCtrl This is a library object that handles the presenting and dismissing of Loading Screens.
+  * @param{AlertController}alertCtrl This is a library object that handles the presenting and dismissing of Alerts.
+   * @param{NavController}navCtrl This is a library object which can control navigation from this page to other pages.
   * */
   constructor(public navCtrl: NavController, private personalInfo: PersonalInfoProvider, private loadingCtrl: LoadingController, private alertCtrl: AlertController) {
-    this.presentLoading();
-    this.personalInfo.getUserInfo().then(promise => {
+      this.presentLoading();
+      this.personalInfo.getUserInfo().then(promise => {
 
+      //parse only if promise is not null, i.e. there's data in local storage
       if (promise)
         this.userDetails = JSON.parse(promise);
       console.log(promise, this.userDetails);
@@ -55,10 +86,11 @@ export class ContactPage {
   }
 
   /**
+   * Called when the button in the view is pressed.
    * Condition among the three things:
-   * 1. Enable Edit mode if information is available
-   * 2. Save Information
-   * 3. Show dialog if name is not given
+   * 1. Enable Edit mode if buttonText is set to BUTTON_EDIT, which means the view was in StaticMode.
+   * 2. Otherwise, if the view is in EditMode and user at least provided userName, save the credentials.
+   * 3. Otherwise, show a dialog mentioning "User Name is Needed"
    * */
   saveUserInfo() {
     if (this.buttonText == BUTTON_EDIT) {
@@ -85,31 +117,32 @@ export class ContactPage {
     }
   }
 
-
-  /*
-* Enables the Input Field
-* */
+  /**
+  * Enables the Input Field.
+  * The view goes from StaticMode to EditMode.
+  * */
   enableEdit() {
     this.inputFieldClass = ENABLE_INPUT_FIELD;
     this.buttonText = BUTTON_SUBMIT;
   }
 
-  /*
-  * Disables the Input Field
+  /**
+  * Disables the Input Field.
+  * The view goes from EditMode to StaticMode.
   * */
   disableEdit() {
     this.inputFieldClass = DISABLE_INPUT_FIELD;
     this.buttonText = BUTTON_EDIT;
   }
 
-  /*
-  * Dismisses the loading screen
+  /**
+  * Dismisses the loading screen.
   * */
   dismissLoading() {
     this.loader.dismiss();
   }
-  /*
-  * Creates and presents basic loading screen
+  /**
+  * Creates and presents basic loading screen.
   * */
   presentLoading() {
     this.loader = this.loadingCtrl.create({

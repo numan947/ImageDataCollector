@@ -61,6 +61,18 @@
     <code>src/pages/contact/contact.ts</code>
 </p>
 
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>This class handles the personal information of users.
+Basically, it takes the information from a user and store it in local storage.
+It provides Edit and Save system for the information.
+This class manages between EditMode and StaticMode of the html page.
+EditMode: Data can be edited and submitted.
+StaticMode: After Data is submitted, the view is disabled.</p>
+
+    </p>
 
 
 
@@ -130,9 +142,6 @@
                                 <a href="#navCtrl">navCtrl</a>
                             </li>
                             <li>
-                                <a href="#submitButton">submitButton</a>
-                            </li>
-                            <li>
                                 <a href="#userDetails">userDetails</a>
                             </li>
                         </ul>
@@ -185,12 +194,18 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/pages/contact/contact.ts:35</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/pages/contact/contact.ts:57</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>This Constructor shows the loading screen.
+Then it fetches the user information from the local storage using the PersonalInfoProvider object.
+After the request is completed, it parses the data into local userDetails variable, which using data binding updates the view if necessary.
+After that, the EditMode or StaticMode is selected depending on whether userName property is set in userDetails.
+Loading screen is dismissed.</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -199,6 +214,7 @@
                                                 <td>Name</td>
                                                     <td>Type</td>
                                                 <td>Optional</td>
+                                                    <td>Description</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -213,6 +229,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <code><p>This is a library object which can control navigation from this page to other pages.</p>
+</code>
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>personalInfo</td>
@@ -225,6 +245,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <code><p>This is the storage provider object that handles the connection with local storage.</p>
+</code>
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>loadingCtrl</td>
@@ -237,6 +261,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <code><p>This is a library object that handles the presenting and dismissing of Loading Screens.</p>
+</code>
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>alertCtrl</td>
@@ -249,6 +277,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <code><p>This is a library object that handles the presenting and dismissing of Alerts.</p>
+</code>
+                                                        </td>
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -290,13 +322,16 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="100" class="link-to-prism">src/pages/contact/contact.ts:100</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="133" class="link-to-prism">src/pages/contact/contact.ts:133</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Disables the Input Field.
+The view goes from EditMode to StaticMode.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -328,13 +363,15 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="108" class="link-to-prism">src/pages/contact/contact.ts:108</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="141" class="link-to-prism">src/pages/contact/contact.ts:141</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Dismisses the loading screen.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -366,13 +403,16 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="92" class="link-to-prism">src/pages/contact/contact.ts:92</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="124" class="link-to-prism">src/pages/contact/contact.ts:124</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Enables the Input Field.
+The view goes from StaticMode to EditMode.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -404,13 +444,15 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="114" class="link-to-prism">src/pages/contact/contact.ts:114</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="147" class="link-to-prism">src/pages/contact/contact.ts:147</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Creates and presents basic loading screen.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Returns : </b>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -442,18 +484,19 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="63" class="link-to-prism">src/pages/contact/contact.ts:63</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="95" class="link-to-prism">src/pages/contact/contact.ts:95</a></div>
                             </td>
                         </tr>
 
 
                 <tr>
                     <td class="col-md-4">
-                            <div class="io-description"><p>Condition among the three things:</p>
+                            <div class="io-description"><p>Called when the button in the view is pressed.
+Condition among the three things:</p>
 <ol>
-<li>Enable Edit mode if information is available</li>
-<li>Save Information</li>
-<li>Show dialog if name is not given</li>
+<li>Enable Edit mode if buttonText is set to BUTTON_EDIT, which means the view was in StaticMode.</li>
+<li>Otherwise, if the view is in EditMode and user at least provided userName, save the credentials.</li>
+<li>Otherwise, show a dialog mentioning &quot;User Name is Needed&quot;</li>
 </ol>
 </div>
 
@@ -504,10 +547,17 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/pages/contact/contact.ts:30</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/pages/contact/contact.ts:44</a></div>
                             </td>
                         </tr>
 
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Data binding for the submit button in the html, so that we can change the text of the button dynamically.
+We change buttonText&#39;s value in between EditMode and SubmitMode.</p>
+</div>
+                    </td>
+                </tr>
 
             </tbody>
         </table>
@@ -543,10 +593,16 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/pages/contact/contact.ts:31</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/pages/contact/contact.ts:48</a></div>
                             </td>
                         </tr>
 
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Data binding for the input field&#39;s css class, so that we can change it&#39;s css class dynamically depending on EditMode and StaticMode.</p>
+</div>
+                    </td>
+                </tr>
 
             </tbody>
         </table>
@@ -582,10 +638,16 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/pages/contact/contact.ts:35</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/pages/contact/contact.ts:57</a></div>
                             </td>
                         </tr>
 
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>A loader object that&#39;s used to initiate and show loading screen.</p>
+</div>
+                    </td>
+                </tr>
 
             </tbody>
         </table>
@@ -617,47 +679,15 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/pages/contact/contact.ts:40</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/pages/contact/contact.ts:70</a></div>
                             </td>
                         </tr>
 
-
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <a name="submitButton"></a>
-                        <span class="name">
-                            <b>
-                            submitButton
-                            </b>
-                            <a href="#submitButton"><span class="icon ion-ios-link"></span></a>
-                        </span>
+                        <div class="io-description">This is a library object which can control navigation from this page to other pages.</div>
                     </td>
                 </tr>
-                <tr>
-                    <td class="col-md-4">
-                        <code>submitButton:     <code></code>
-</code>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <b>Decorators : </b>
-                            <br />
-                            <code>
-                                @ViewChild(&#x27;submitbutton&#x27;)<br />
-                            </code>
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="28" class="link-to-prism">src/pages/contact/contact.ts:28</a></div>
-                            </td>
-                        </tr>
-
 
             </tbody>
         </table>
@@ -693,10 +723,16 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/pages/contact/contact.ts:33</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/pages/contact/contact.ts:53</a></div>
                             </td>
                         </tr>
 
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Main model class that contains user information. Initialized as empty.</p>
+</div>
+                    </td>
+                </tr>
 
             </tbody>
         </table>
@@ -713,42 +749,73 @@ import {LoadingController} from &#x27;ionic-angular&#x27;;
 import {UserProfile} from &quot;../../app/models/UserProfile&quot;;
 
 
-// Button States
+/**
+* This variable stores Submit state the Button can be in Personal Info Page.
+* */
 const BUTTON_SUBMIT &#x3D; &quot;Submit&quot;;
+/**
+* This variable stores Edit state the Button can be in Personal Info Page.
+* */
 const BUTTON_EDIT &#x3D; &quot;Edit&quot;;
 //Input Field States
+/**
+* This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
+* */
 const DISABLE_INPUT_FIELD &#x3D; &quot;page-contact disabled&quot;;
+/**
+* This Variable contains the css needed to make the Input fields in Personal Info Page enabled.
+* */
 const ENABLE_INPUT_FIELD &#x3D; &quot;page-contact enabled&quot;;
 
 
+/**
+ * This class handles the personal information of users.
+ * Basically, it takes the information from a user and store it in local storage.
+ * It provides Edit and Save system for the information.
+ * This class manages between EditMode and StaticMode of the html page.
+ * EditMode: Data can be edited and submitted.
+ * StaticMode: After Data is submitted, the view is disabled.
+ **/
 @Component({
   selector: &#x27;page-contact&#x27;,
   templateUrl: &#x27;contact.html&#x27;
 })
-
-/*
-* Main Functions Are:
-* 1. Constructor
-* 2. SaveUserInfo
-* Rest are utilities that provide support.
-* */
 export class ContactPage {
-  @ViewChild(&quot;submitbutton&quot;) submitButton;
-
+  /**
+  * Data binding for the submit button in the html, so that we can change the text of the button dynamically.
+  * We change buttonText&#x27;s value in between EditMode and SubmitMode.
+  * */
   buttonText: String &#x3D; BUTTON_SUBMIT;
+  /**
+  * Data binding for the input field&#x27;s css class, so that we can change it&#x27;s css class dynamically depending on EditMode and StaticMode.
+  * */
   inputFieldClass: string &#x3D; ENABLE_INPUT_FIELD;
 
+  /**
+  * Main model class that contains user information. Initialized as empty.
+  * */
   userDetails: UserProfile &#x3D; new UserProfile(&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;);
-
+  /**
+  * A loader object that&#x27;s used to initiate and show loading screen.
+  * */
   loader: any &#x3D; null;
 
-  /*
-  * Fetches data from storage and changes the view accordingly.
+  /**
+  * This Constructor shows the loading screen.
+  * Then it fetches the user information from the local storage using the PersonalInfoProvider object.
+  * After the request is completed, it parses the data into local userDetails variable, which using data binding updates the view if necessary.
+  * After that, the EditMode or StaticMode is selected depending on whether userName property is set in userDetails.
+  * Loading screen is dismissed.
+  * @param{PersonalInfoProvider}personalInfo This is the storage provider object that handles the connection with local storage.
+  * @param{LoadingController}loadingCtrl This is a library object that handles the presenting and dismissing of Loading Screens.
+  * @param{AlertController}alertCtrl This is a library object that handles the presenting and dismissing of Alerts.
+   * @param{NavController}navCtrl This is a library object which can control navigation from this page to other pages.
   * */
   constructor(public navCtrl: NavController, private personalInfo: PersonalInfoProvider, private loadingCtrl: LoadingController, private alertCtrl: AlertController) {
-    this.presentLoading();
-    this.personalInfo.getUserInfo().then(promise &#x3D;&gt; {
+      this.presentLoading();
+      this.personalInfo.getUserInfo().then(promise &#x3D;&gt; {
 
+      //parse only if promise is not null, i.e. there&#x27;s data in local storage
       if (promise)
         this.userDetails &#x3D; JSON.parse(promise);
       console.log(promise, this.userDetails);
@@ -763,10 +830,11 @@ export class ContactPage {
   }
 
   /**
+   * Called when the button in the view is pressed.
    * Condition among the three things:
-   * 1. Enable Edit mode if information is available
-   * 2. Save Information
-   * 3. Show dialog if name is not given
+   * 1. Enable Edit mode if buttonText is set to BUTTON_EDIT, which means the view was in StaticMode.
+   * 2. Otherwise, if the view is in EditMode and user at least provided userName, save the credentials.
+   * 3. Otherwise, show a dialog mentioning &quot;User Name is Needed&quot;
    * */
   saveUserInfo() {
     if (this.buttonText &#x3D;&#x3D; BUTTON_EDIT) {
@@ -793,31 +861,32 @@ export class ContactPage {
     }
   }
 
-
-  /*
-* Enables the Input Field
-* */
+  /**
+  * Enables the Input Field.
+  * The view goes from StaticMode to EditMode.
+  * */
   enableEdit() {
     this.inputFieldClass &#x3D; ENABLE_INPUT_FIELD;
     this.buttonText &#x3D; BUTTON_SUBMIT;
   }
 
-  /*
-  * Disables the Input Field
+  /**
+  * Disables the Input Field.
+  * The view goes from EditMode to StaticMode.
   * */
   disableEdit() {
     this.inputFieldClass &#x3D; DISABLE_INPUT_FIELD;
     this.buttonText &#x3D; BUTTON_EDIT;
   }
 
-  /*
-  * Dismisses the loading screen
+  /**
+  * Dismisses the loading screen.
   * */
   dismissLoading() {
     this.loader.dismiss();
   }
-  /*
-  * Creates and presents basic loading screen
+  /**
+  * Creates and presents basic loading screen.
   * */
   presentLoading() {
     this.loader &#x3D; this.loadingCtrl.create({
