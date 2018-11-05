@@ -1,6 +1,21 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Home</ion-title>
+    <ion-toolbar>
+      <ion-buttons>
+        <button
+          ion-button icon-only float-start color="danger"
+          *ngIf="!GENERALMODE"
+          tooltip="Discard all changes" positionV="bottom" duration="1200"
+          (click)="discardAllChanges()"
+        >
+          <ion-icon name="custom-fire" ></ion-icon>
+        </button>
+        <button ion-button icon-only color="secondary" float-end>
+          <ion-icon [name]="cloudSyncState"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
   </ion-navbar>
 </ion-header>
 
@@ -81,7 +96,7 @@
           float-end
           (click)="cancelImage()"
         >
-          <ion-icon name="close-circle"></ion-icon>
+          <ion-icon name="close-circle" color="danger"></ion-icon>
         </button>
       </div>
     </div>
@@ -158,18 +173,14 @@
       </ion-segment>
 
       <button ion-button icon-only round large color="primary" (click)="cropImage()">
-        <ion-icon name="done-all"></ion-icon>
+        <ion-icon name="custom-checkmark"></ion-icon>
       </button>
       <button ion-button block icon-only round large color="danger" (click)="cancelCrop()">
-        <ion-icon name="done-all"></ion-icon>
+        <ion-icon name="custom-cross"></ion-icon>
       </button>
 
     </ion-grid>
-
   </ion-list>
-
-
-
 
 
 
@@ -212,13 +223,23 @@
 
     <div class="row">
       <div class="col col-50">
-        <button ion-button icon-start icon-only clear float-start>
+        <button
+          ion-button icon-start icon-only clear
+          float-start
+          (click)="saveAndUpload()"
+        >
           <ion-icon name="checkmark-circle"></ion-icon>
         </button>
       </div>
       <div class="col col-50">
-        <button ion-button icon-start icon-only clear float-end>
-          <ion-icon name="close-circle"></ion-icon>
+        <button
+          ion-button icon-start icon-only clear
+          float-end
+          (click)="cancelSaveAndUpload()"
+        >
+          <ion-icon
+            name="close-circle" color="danger"
+          ></ion-icon>
         </button>
       </div>
     </div>

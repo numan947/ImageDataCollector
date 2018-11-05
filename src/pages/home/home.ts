@@ -67,7 +67,15 @@ export class HomePage {
   capturedImage: any = null;
   croppedImage: any = null;
 
+  cloudSyncState:string = "custom-cloud-check";
+
   constructor(public navCtrl: NavController, private camera: Camera, public platform: Platform,public alertCtrl: AlertController) {
+  }
+
+  discardAllChanges(){
+    this.setGeneralMode();
+    this.capturedImage=null;
+    this.croppedImage=null;
   }
 
   showError(errorMessage){
@@ -98,14 +106,14 @@ export class HomePage {
       this.camera.getPicture(this.CAMERAOPTIONS).then(imageData => {
         this.capturedImage = 'data:image/jpeg;base64,' + imageData;
         //this.showError(this.capturedImage);
-        this.setImageCaptureModeMode();
+        this.setImageCaptureMode();
       }).catch(err=>{
         console.log("WEIRD ERROR HAPPENED");
         this.showError(err.message);
       });
     } else {
       this.capturedImage = "../../assets/mock-images/mock_image.jpg";
-      this.setImageCaptureModeMode();
+      this.setImageCaptureMode();
     }
   }
 
@@ -118,7 +126,6 @@ export class HomePage {
     console.log("Inside cancelImage");
     this.setGeneralMode();
   }
-
   cropImage() {
     let croppedImgB64String: string = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg', (70 / 100));
     this.croppedImage = croppedImgB64String;
@@ -126,9 +133,16 @@ export class HomePage {
   }
 
   cancelCrop(){
-    this.setImageCaptureModeMode();
+    this.setImageCaptureMode();
   }
 
+  saveAndUpload(){
+    console.log("Inside saveAndUpload");
+
+  }
+  cancelSaveAndUpload(){
+    console.log("Inside cancelSaveAndUpload");
+  }
 
   reset() {
     this.angularCropper.cropper.reset();
@@ -173,7 +187,7 @@ export class HomePage {
     this.GENERALMODE = this.IMAGECAPTUREDMODE = this.IMAGEEDITMODE = false;
   }
 
-  setImageCaptureModeMode() {
+  setImageCaptureMode() {
     this.IMAGECAPTUREDMODE = true;
     this.IMAGECROPPEDMODE = this.GENERALMODE = this.IMAGEEDITMODE = false;
   }
