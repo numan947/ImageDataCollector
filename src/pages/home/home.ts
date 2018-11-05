@@ -1,8 +1,10 @@
 import {Component, getPlatform, ViewChild} from '@angular/core';
-import {AlertController, NavController, Platform} from 'ionic-angular';
+import {AlertController, Events, NavController, Platform} from 'ionic-angular';
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {AngularCropperjsComponent} from "angular-cropperjs";
 import {Labels} from "../../app/models/Labels";
+import {NetworkProvider} from "../../providers/network/network";
+import {FileSaverProvider} from "../../providers/file-saver/file-saver";
 //Input Field States
 /**
  * This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
@@ -68,8 +70,16 @@ export class HomePage {
   croppedImage: any = null;
 
   cloudSyncState:string = "custom-cloud-check";
+  TESTVARIABLE:string = null;
 
-  constructor(public navCtrl: NavController, private camera: Camera, public platform: Platform,public alertCtrl: AlertController) {
+  constructor(public events:Events,
+              public navCtrl: NavController,
+              private camera: Camera,
+              public platform: Platform,
+              public alertCtrl: AlertController,
+              public networkProvider:NetworkProvider,
+              public fileSaver:FileSaverProvider)
+  {
   }
 
   discardAllChanges(){
@@ -80,7 +90,7 @@ export class HomePage {
 
   showError(errorMessage){
     this.alertCtrl.create({
-      title:"Weird Error Happened",
+      title:"Information!",
       subTitle:errorMessage,
       buttons:["Ok"]
     }).present();
@@ -105,14 +115,16 @@ export class HomePage {
     if (this.platform.is('cordova')) {
       this.camera.getPicture(this.CAMERAOPTIONS).then(imageData => {
         this.capturedImage = 'data:image/jpeg;base64,' + imageData;
+        this.TESTVARIABLE = imageData.substr(imageData.lastIndexOf('/') + 1);
         //this.showError(this.capturedImage);
         this.setImageCaptureMode();
       }).catch(err=>{
         console.log("WEIRD ERROR HAPPENED");
-        this.showError(err.message);
+        if(!(err=="No Image Selected"))
+          this.showError(err);
       });
     } else {
-      this.capturedImage = "../../assets/mock-images/mock_image.jpg";
+      this.capturedImage = "assets/mock-images/mock_image.jpg";
       this.setImageCaptureMode();
     }
   }
@@ -137,11 +149,21 @@ export class HomePage {
   }
 
   saveAndUpload(){
-    console.log("Inside saveAndUpload");
+    console.log("Inside saveAndUpload ", this.selectedLabel);
+    if(this.platform.is("cordova")) {
+      if (this.networkProvider.isConnected()) {
+        this.showError("WILL UPLOAD TO STORAGE: ");
+      } else {
+        this.showError("Network not available, saving to local storage");
+        this.fileSaver.writeFile(this.croppedImage, this.selectedLabel);
+
+      }
+    }
 
   }
   cancelSaveAndUpload(){
     console.log("Inside cancelSaveAndUpload");
+    this.setImageEditMode();
   }
 
   reset() {
