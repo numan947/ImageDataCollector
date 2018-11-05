@@ -50,18 +50,37 @@
     </ion-list>
   </ion-list>
 
+
+
+
+
+
+
+
+
+
+
+
   <!--CAPTURED IMAGE VIEW-->
 
   <ion-card class="page-home ion-card" *ngIf="IMAGECAPTUREDMODE">
-    <img src="../../assets/imgs/test.jpg"/>
+    <img [src] = "capturedImage">
     <div class="row">
       <div class="col col-50">
-        <button ion-button icon-start icon-only clear float-start>
+        <button
+          ion-button icon-start icon-only clear
+          float-start
+          (click)="selectImage()"
+        >
           <ion-icon name="checkmark-circle"></ion-icon>
         </button>
       </div>
       <div class="col col-50">
-        <button ion-button icon-start icon-only clear float-end>
+        <button
+          ion-button icon-start icon-only clear
+          float-end
+          (click)="cancelImage()"
+        >
           <ion-icon name="close-circle"></ion-icon>
         </button>
       </div>
@@ -69,10 +88,27 @@
   </ion-card>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <!--IMAGE EDITING VIEW-->
   <ion-list *ngIf="IMAGEEDITMODE">
     <angular-cropper #angular_cropper [cropperOptions]="CROPPEROPTIONS"
-                     [imageUrl]="'https://fengyuanchen.github.io/cropperjs/images/picture.jpg'"></angular-cropper>
+                     [imageUrl]="capturedImage"></angular-cropper>
 
     <!--TODO: add *ngIf="capturedImage" to the construct below-->
     <ion-grid>
@@ -128,6 +164,30 @@
     </ion-grid>
 
   </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   <!--EDITED IMAGE VIEW-->
