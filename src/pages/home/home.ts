@@ -95,7 +95,7 @@ export class HomePage {
   captureImage() {
     console.log("Inside CaptureImage");
     // // return;//TODO REMOVE LATER
-    if (this.platform.is('cordova')) {
+    if (this.platform.is('android')) {
       this.camera.getPicture(this.CAMERAOPTIONS).then(imageData => {
         this.capturedImage = 'data:image/png;base64' + imageData;
         this.setImageCaptureModeMode();
