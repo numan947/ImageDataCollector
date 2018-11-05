@@ -3,6 +3,15 @@ import {AlertController, NavController, Platform} from 'ionic-angular';
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {AngularCropperjsComponent} from "angular-cropperjs";
 import {Labels} from "../../app/models/Labels";
+//Input Field States
+/**
+ * This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
+ * */
+const DISABLE_INPUT_FIELD = "page-contact disabled";
+/**
+ * This Variable contains the css needed to make the Input fields in Personal Info Page enabled.
+ * */
+const ENABLE_INPUT_FIELD = "page-contact enabled";
 
 
 @Component({
@@ -36,39 +45,29 @@ export class HomePage {
   CAMERAOPTIONS: CameraOptions = {
     quality: 100,
     destinationType: this.camera.DestinationType.DATA_URL,
-    encodingType: this.camera.EncodingType.PNG,
+    encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     sourceType: this.camera.PictureSourceType.CAMERA
   };
 
   CROPPEROPTIONS: any = {
-    dragMode: 'crop',
+    dragMode: 'none',
     aspectRatio: 1,
     autoCrop: true,
     movable: true,
     zoomable: true,
     scalable: true,
-    autoCropArea: 0.8
+    autoCropArea: 0.8,
+    zoomOnTouch:false,
+    zoomOnWheel:false,
+    cropBoxMovable:false,
+    toggleDragModeOnDblclick:false
   };
-  groceries = [
-    'Bread',
-    'Milk',
-    'Cheese',
-    'Snacks',
-    'Apples',
-    'Bananas',
-    'Peanut Butter',
-    'Chocolate',
-    'Avocada',
-    'Vegemite',
-    'Muffins',
-    'Paper towels'
-  ];
+
   capturedImage: any = null;
   croppedImage: any = null;
 
   constructor(public navCtrl: NavController, private camera: Camera, public platform: Platform,public alertCtrl: AlertController) {
-
   }
 
   showError(errorMessage){
@@ -95,43 +94,39 @@ export class HomePage {
   captureImage() {
     console.log("Inside CaptureImage");
     // // return;//TODO REMOVE LATER
-    if (this.platform.is('android')) {
+    if (this.platform.is('cordova')) {
       this.camera.getPicture(this.CAMERAOPTIONS).then(imageData => {
-        this.capturedImage = 'data:image/png;base64' + imageData;
+        this.capturedImage = 'data:image/jpeg;base64,' + imageData;
+        //this.showError(this.capturedImage);
         this.setImageCaptureModeMode();
       }).catch(err=>{
         console.log("WEIRD ERROR HAPPENED");
         this.showError(err.message);
       });
     } else {
-      this.camera.getPicture(this.CAMERAOPTIONS).then((imageData) => {
-        // imageData is either a base64 encoded string or a file URI
-        // If it's base64:
-        console.log(imageData);
-        let base64Image = 'data:image/jpeg;base64,' + imageData;
-        console.log(base64Image);
-        this.capturedImage = "../../assets/mock-images/mock_image.jpg";
-        console.log(this.capturedImage)
-        this.setImageCaptureModeMode();
-      }, (err) => {
-        console.log("WEIRD ERROR HAPPENED");
-        this.showError(err.message);
-      });
+      this.capturedImage = "../../assets/mock-images/mock_image.jpg";
+      this.setImageCaptureModeMode();
     }
   }
 
   selectImage(){
     console.log("Inside selectImage");
+    this.setImageEditMode();
   }
   cancelImage()
   {
     console.log("Inside cancelImage");
+    this.setGeneralMode();
   }
 
   cropImage() {
-    let croppedImgB64String: string = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/png', (100 / 100));
+    let croppedImgB64String: string = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg', (70 / 100));
     this.croppedImage = croppedImgB64String;
     this.setImageCroppedMode();
+  }
+
+  cancelCrop(){
+    this.setImageCaptureModeMode();
   }
 
 

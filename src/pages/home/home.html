@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding no-bounce>
 
   <!--IMAGE CAPTURING VIEW-->
   <ion-list *ngIf="GENERALMODE">
@@ -64,7 +64,7 @@
   <!--CAPTURED IMAGE VIEW-->
 
   <ion-card class="page-home ion-card" *ngIf="IMAGECAPTUREDMODE">
-    <img [src] = "capturedImage">
+    <img src={{capturedImage}}>
     <div class="row">
       <div class="col col-50">
         <button
@@ -157,7 +157,10 @@
         </ion-col>
       </ion-segment>
 
-      <button ion-button block icon-only round large color="" (click)="cropImage()">
+      <button ion-button icon-only round large color="primary" (click)="cropImage()">
+        <ion-icon name="done-all"></ion-icon>
+      </button>
+      <button ion-button block icon-only round large color="danger" (click)="cancelCrop()">
         <ion-icon name="done-all"></ion-icon>
       </button>
 

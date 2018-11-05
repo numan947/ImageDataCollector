@@ -28,4 +28,10 @@ page-home {
     margin-top: 0px !important;
     margin-bottom: 0px !important;
   }
+
+  .disabled {
+    pointer-events:none; //This makes it not clickable
+    opacity:0.6;         //This grays it out to look disabled
+  }
+
 }
