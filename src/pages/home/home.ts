@@ -1,5 +1,5 @@
 import {Component, getPlatform, ViewChild} from '@angular/core';
-import {AlertController, Events, NavController, Platform} from 'ionic-angular';
+import {AlertController, Events, NavController, Platform, ToastController} from 'ionic-angular';
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {AngularCropperjsComponent} from "angular-cropperjs";
 import {Labels} from "../../app/models/Labels";
@@ -78,14 +78,14 @@ export class HomePage {
               public platform: Platform,
               public alertCtrl: AlertController,
               public networkProvider:NetworkProvider,
-              public fileSaver:FileSaverProvider)
+              public fileSaver:FileSaverProvider,
+              public toastCtrl:ToastController
+              )
   {
   }
 
   discardAllChanges(){
     this.setGeneralMode();
-    this.capturedImage=null;
-    this.croppedImage=null;
   }
 
   showError(errorMessage){
@@ -153,10 +153,14 @@ export class HomePage {
     if(this.platform.is("cordova")) {
       if (this.networkProvider.isConnected()) {
         this.showError("WILL UPLOAD TO STORAGE: ");
+        const toast = this.toastCtrl.create({
+          message: "WTF",
+          duration: 3000
+        });
+        toast.present();
       } else {
         this.showError("Network not available, saving to local storage");
         this.fileSaver.writeFile(this.croppedImage, this.selectedLabel);
-
       }
     }
 
@@ -202,6 +206,8 @@ export class HomePage {
   setGeneralMode() {
     this.GENERALMODE = true;
     this.IMAGECROPPEDMODE = this.IMAGECAPTUREDMODE = this.IMAGEEDITMODE = false;
+    this.capturedImage=null;
+    this.croppedImage=null;
   }
 
   setImageCroppedMode() {

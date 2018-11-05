@@ -1,6 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {File} from "@ionic-native/file";
+import {ToastController} from "ionic-angular";
 
 /*
   Generated class for the FileSaverProvider provider.
@@ -14,9 +15,16 @@ const SAVED_FILES = "SAVED_FILES_FOR_UPLOADING_LATER";
 
 @Injectable()
 export class FileSaverProvider {
-
-  constructor(public file: File) {
+  toast:any=null;
+  constructor(public file: File, public toastCtrl:ToastController) {
     console.log('Hello FileSaverProvider Provider');
+  }
+  presentToast(message) {
+    this.toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    this.toast.present();
   }
 
   writeFile(base64Data: any, folderName: string, fileName: any = GENERIC_SAVE_FILE_NAME + (new Date().toDateString())) {
@@ -28,9 +36,10 @@ export class FileSaverProvider {
       let filePath = this.file.externalRootDirectory + folderName;
 
       this.file.writeFile(filePath, fileName, DataBlob, contentType).then((success) => {
-
+        this.presentToast("Saved to: "+filePath+fileName);
       }).catch((err) => {
         console.log("Error Occured While Writing File", err);
+        this.presentToast("Error saving file.");
       });
     });
   }
