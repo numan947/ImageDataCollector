@@ -6,42 +6,117 @@
 
 <ion-content padding>
 
-  <ion-list>
-
-    <div class="row  page-home item" >
+  <!--IMAGE CAPTURING VIEW-->
+  <ion-list *ngIf="!capturedImage">
+    <div class="row  page-home item">
       <div class="col col-50">
-
         <button class="button button-positive" ion-button icon-only float-start>
           <ion-icon name="checkbox"></ion-icon>
         </button>
-
-
       </div>
       <div class="col col-50">
-
-
         <button class="button button-positive" ion-button icon-only float-end>
           <ion-icon name="construct"></ion-icon>
         </button>
-
-
       </div>
     </div>
-
     <ion-list class="row">
-
-
-      <button  ion-button block full round icon-start *ngIf="shahadProject">
-        <ion-icon name="camera"></ion-icon>Take Picture
+      <button ion-button block full round icon-start *ngIf="shahadProject" (click)="captureImage()">
+        <ion-icon name="camera"></ion-icon>
+        Take Picture
       </button>
-
-
-      <button ion-button block full round  icon-start *ngIf="rafidProject">
+      <button ion-button block full round icon-start *ngIf="rafidProject">
         <ion-icon name="md-cloud-download"></ion-icon>
         Import From Source
       </button>
-
-
     </ion-list>
   </ion-list>
+
+  <!--CAPTURED IMAGE VIEW-->
+
+  <ion-card class="page-home ion-card" *ngIf="capturedImage">
+    <img src="../../assets/imgs/test.jpg"/>
+    <div class="row">
+      <div class="col col-50">
+        <button ion-button icon-start icon-only clear float-start>
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </button>
+      </div>
+      <div class="col col-50">
+        <button ion-button icon-start icon-only clear float-end>
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </ion-card>
+
+
+  <!--IMAGE EDITING VIEW-->
+  <ion-list>
+    <angular-cropper #angular_cropper [cropperOptions]="CROPPEROPTIONS"
+                     [imageUrl]="'https://fengyuanchen.github.io/cropperjs/images/picture.jpg'"></angular-cropper>
+
+    <!--TODO: add *ngIf="capturedImage" to the construct below-->
+    <ion-grid>
+      <ion-row>
+        <ion-col text-center justify-content-center>
+          <button ion-button class="page-home btn" small color="primary" icon-only (click)="zoom(true)">
+            <ion-icon name="custom-zoom-in"></ion-icon>
+          </button>
+          <button ion-button class="page-home btn" icon-only small color="primary" (click)="zoom(false)">
+            <ion-icon name="custom-zoom-out"></ion-icon>
+          </button>
+          <button ion-button class="page-home btn" icon-only small color="primary" (click)="scaleX()">
+            <ion-icon name="custom-tab"></ion-icon>
+          </button>
+          <button ion-button class="page-home btn rotate-90" small icon-only color="primary" (click)="scaleY()">
+            <ion-icon name="custom-tab" class=""></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+
+
+      <button ion-button class="page-home btn" icon-only small color="primary" (click)="rotate()">
+        <ion-icon name="custom-spinner11"></ion-icon>
+      </button>
+
+
+
+
+
+
+
+
+
+
+
+
+        <button ion-button class="button customBtn" icon-left color="primary" (click)="move(0,-10)">
+          <ion-icon name="arrow-round-up"></ion-icon>
+          UP
+        </button>
+
+
+        <button ion-button class="button customBtn" icon-left color="primary" (click)="move(0,10)">
+          <ion-icon name="arrow-round-down"></ion-icon>
+          DOWN
+        </button>
+
+
+        <button ion-button class="button customBtn" icon-left color="primary" (click)="move(10,0)">
+          <ion-icon name="arrow-round-forward"></ion-icon>
+          RIGHT
+        </button>
+
+
+        <button ion-button class="button customBtn" icon-left color="primary" (click)="move(-10,0)">
+          <ion-icon name="arrow-round-back"></ion-icon>
+          LEFT
+        </button>
+
+    </ion-grid>
+  </ion-list>
+  <!--EDITED IMAGE VIEW-->
+
+
 </ion-content>

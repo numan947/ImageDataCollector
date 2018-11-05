@@ -3,11 +3,23 @@ page-home {
     margin-top:10px;
     margin-bottom: 20vh;
   }
-  btn {
-    display:block;
+  .btn {
     height: 50px;
     width: 50px;
     border-radius: 50%;
     border: 1px ;
+  }
+  .ion-card{
+    display: flex;
+    flex-direction: column;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  .rotate-90 {
+    display: inline-block;
+    transform: rotate(90deg);
+  }
+  .row-items{
+    display: flex;
   }
 }
