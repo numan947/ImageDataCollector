@@ -5,14 +5,43 @@
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-    <button ion-button block (click)="deleteLocalCache()">DELETE LOCAL CACHE</button>
-  </p>
+
+  <ion-list>
+
+    <div class="row  page-home item" >
+      <div class="col col-50">
+
+        <button class="button button-positive" ion-button icon-only float-start>
+          <ion-icon name="checkbox"></ion-icon>
+        </button>
+
+
+      </div>
+      <div class="col col-50">
+
+
+        <button class="button button-positive" ion-button icon-only float-end>
+          <ion-icon name="construct"></ion-icon>
+        </button>
+
+
+      </div>
+    </div>
+
+    <ion-list class="row">
+
+
+      <button  ion-button block full round icon-start *ngIf="shahadProject">
+        <ion-icon name="camera"></ion-icon>Take Picture
+      </button>
+
+
+      <button ion-button block full round  icon-start *ngIf="rafidProject">
+        <ion-icon name="md-cloud-download"></ion-icon>
+        Import From Source
+      </button>
+
+
+    </ion-list>
+  </ion-list>
 </ion-content>
