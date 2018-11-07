@@ -14,6 +14,9 @@ page-home {
     flex-direction: column;
     width: 95% !important;
     margin: 0.5vh !important;
+    min-height: fit-content;
+    background-size:  100% 100% !important;
+    width : 100% !important;
   }
   .rotate-90 {
     display: inline-block;

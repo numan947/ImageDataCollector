@@ -15,7 +15,7 @@ const DISABLE_INPUT_FIELD = "page-contact disabled";
  * */
 const ENABLE_INPUT_FIELD = "page-contact enabled";
 
-var cordova:any;
+declare var cordova:any;
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -35,9 +35,9 @@ export class HomePage {
   selectedLabel: string = "None"; //By default none is selected
 
   GENERALMODE: boolean = true;
-  IMAGECAPTUREDMODE: boolean = true;
-  IMAGEEDITMODE: boolean = true;
-  IMAGECROPPEDMODE: boolean = true;
+  IMAGECAPTUREDMODE: boolean = false;
+
+  imagePathForShowing:any = null;
 
 
   CAMERAOPTIONS: CameraOptions = {
@@ -108,8 +108,10 @@ export class HomePage {
         let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
         let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
         this.capturedImage = imagePath;
-        //this.copyFileToLocalDir(correctPath,currentName,this.createFileName());
-        //this.showError(this.capturedImage);c
+        this.imagePathForShowing = this.capturedImage;
+        console.log(this.imagePathForShowing);
+        // this.copyFileToLocalDir(correctPath,currentName,this.createFileName());
+        // this.showError(this.capturedImage);
         this.setImageCaptureMode();
       }).catch(err => {
         console.log("WEIRD ERROR HAPPENED");
@@ -118,8 +120,13 @@ export class HomePage {
       });
     } else {
       this.capturedImage = "assets/mock-images/mock_image.jpg";
+      this.imagePathForShowing = this.capturedImage;
       this.setImageCaptureMode();
     }
+  }
+
+  cancelStoreImage(){
+    this.setGeneralMode();
   }
 
   private createFileName() {
@@ -167,8 +174,6 @@ export class HomePage {
     }
   }
 
-
-
   setGeneralMode() {
     this.GENERALMODE = true;
     this.IMAGECAPTUREDMODE  = false;
@@ -182,16 +187,5 @@ export class HomePage {
   }
 
 
-  public pathForImage(img) {
-    if (img === null) {
-      return '';
-    }
-    else if(!this.platform.is('cordova')){
-      console.log("img is ",img);
-      return img;
-    }
-    else {
-      return cordova.file.dataDirectory + img;
-    }
-  }
+
 }
