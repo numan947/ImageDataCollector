@@ -79,9 +79,8 @@
   <!--CAPTURED IMAGE VIEW-->
 
   <ion-card class="page-home ion-card" *ngIf="IMAGECAPTUREDMODE">
-    <img src={{capturedImage}}>
+    <img src="{{pathForImage(capturedImage)}}">
     <div class="row">
-      {{TESTVARIABLE}}
       <div class="col col-50">
         <button
           ion-button icon-start icon-only clear
@@ -121,72 +120,70 @@
 
 
 
-  <!--IMAGE EDITING VIEW-->
-  <ion-list *ngIf="IMAGEEDITMODE">
-    <angular-cropper #angular_cropper [cropperOptions]="CROPPEROPTIONS"
-                     [imageUrl]="capturedImage"></angular-cropper>
+  <!--&lt;!&ndash;IMAGE EDITING VIEW&ndash;&gt;-->
+  <!--<ion-list *ngIf="IMAGEEDITMODE">-->
 
-    <!--TODO: add *ngIf="capturedImage" to the construct below-->
-    <ion-grid>
-      <ion-segment>
-        <ion-col text-center justify-content-center>
-          <button ion-button class="page-home btn" small color="primary" icon-only (click)="zoom(true)">
-            <ion-icon name="custom-zoom-in"></ion-icon>
-          </button>
-          <button ion-button class="page-home btn" icon-only small color="primary" (click)="zoom(false)">
-            <ion-icon name="custom-zoom-out"></ion-icon>
-          </button>
-          <button ion-button class="page-home btn" icon-only small color="primary" (click)="scaleX()">
-            <ion-icon name="custom-tab"></ion-icon>
-          </button>
-          <button ion-button class="page-home btn rotate-90" small icon-only color="primary" (click)="scaleY()">
-            <ion-icon name="custom-tab" class=""></ion-icon>
-          </button>
-        </ion-col>
-      </ion-segment>
+    <!--&lt;!&ndash;TODO: add *ngIf="capturedImage" to the construct below&ndash;&gt;-->
+    <!--<ion-grid>-->
+      <!--<ion-segment>-->
+        <!--<ion-col text-center justify-content-center>-->
+          <!--<button ion-button class="page-home btn" small color="primary" icon-only (click)="zoom(true)">-->
+            <!--<ion-icon name="custom-zoom-in"></ion-icon>-->
+          <!--</button>-->
+          <!--<button ion-button class="page-home btn" icon-only small color="primary" (click)="zoom(false)">-->
+            <!--<ion-icon name="custom-zoom-out"></ion-icon>-->
+          <!--</button>-->
+          <!--<button ion-button class="page-home btn" icon-only small color="primary" (click)="scaleX()">-->
+            <!--<ion-icon name="custom-tab"></ion-icon>-->
+          <!--</button>-->
+          <!--<button ion-button class="page-home btn rotate-90" small icon-only color="primary" (click)="scaleY()">-->
+            <!--<ion-icon name="custom-tab" class=""></ion-icon>-->
+          <!--</button>-->
+        <!--</ion-col>-->
+      <!--</ion-segment>-->
 
-      <ion-segment>
-        <ion-col text-center justify-content-center>
-          <button ion-button class="page-home btn" icon-only color="primary" (click)="move(0,-10)">
-            <ion-icon name="custom-circle-up"></ion-icon>
-          </button>
+      <!--<ion-segment>-->
+        <!--<ion-col text-center justify-content-center>-->
+          <!--<button ion-button class="page-home btn" icon-only color="primary" (click)="move(0,-10)">-->
+            <!--<ion-icon name="custom-circle-up"></ion-icon>-->
+          <!--</button>-->
 
-          <button ion-button class="page-home btn" icon-only color="primary" (click)="move(0,10)">
-            <ion-icon name="custom-circle-down"></ion-icon>
-          </button>
+          <!--<button ion-button class="page-home btn" icon-only color="primary" (click)="move(0,10)">-->
+            <!--<ion-icon name="custom-circle-down"></ion-icon>-->
+          <!--</button>-->
 
-          <button ion-button class="page-home btn" icon-only color="primary" (click)="move(-10,0)">
-            <ion-icon name="custom-circle-left"></ion-icon>
-          </button>
+          <!--<button ion-button class="page-home btn" icon-only color="primary" (click)="move(-10,0)">-->
+            <!--<ion-icon name="custom-circle-left"></ion-icon>-->
+          <!--</button>-->
 
-          <button ion-button class="page-home btn" icon-only  color="primary" (click)="move(10,0)">
-            <ion-icon name="custom-circle-right"></ion-icon>
-          </button>
+          <!--<button ion-button class="page-home btn" icon-only  color="primary" (click)="move(10,0)">-->
+            <!--<ion-icon name="custom-circle-right"></ion-icon>-->
+          <!--</button>-->
 
-        </ion-col>
-      </ion-segment>
-      <ion-segment>
-        <ion-col justify-content-center text-center>
-          <button ion-button class="page-home btn" icon-only small color="primary" (click)="rotate()">
-            <ion-icon name="custom-spinner11"></ion-icon>
-          </button>
-        </ion-col>
-      </ion-segment>
+        <!--</ion-col>-->
+      <!--</ion-segment>-->
+      <!--<ion-segment>-->
+        <!--<ion-col justify-content-center text-center>-->
+          <!--<button ion-button class="page-home btn" icon-only small color="primary" (click)="rotate()">-->
+            <!--<ion-icon name="custom-spinner11"></ion-icon>-->
+          <!--</button>-->
+        <!--</ion-col>-->
+        <!--<ion-col justify-content-center text-center>-->
+          <!--<button ion-button class="page-home btn" icon-only small color="royal" (click)="reset()">-->
+            <!--<ion-icon name="custom-blocked"></ion-icon>-->
+          <!--</button>-->
+        <!--</ion-col>-->
+      <!--</ion-segment>-->
 
-      <button ion-button icon-only round large color="primary" (click)="cropImage()">
-        <ion-icon name="custom-checkmark"></ion-icon>
-      </button>
-      <button ion-button block icon-only round large color="danger" (click)="cancelCrop()">
-        <ion-icon name="custom-cross"></ion-icon>
-      </button>
+      <!--<button ion-button icon-only round large color="primary" (click)="cropImage()">-->
+        <!--<ion-icon name="custom-checkmark"></ion-icon>-->
+      <!--</button>-->
+      <!--<button ion-button block icon-only round large color="danger" (click)="cancelCrop()">-->
+        <!--<ion-icon name="custom-cross"></ion-icon>-->
+      <!--</button>-->
 
-    </ion-grid>
-  </ion-list>
-
-
-
-
-
+    <!--</ion-grid>-->
+  <!--</ion-list>-->
 
 
 
@@ -205,47 +202,52 @@
 
 
 
-  <!--EDITED IMAGE VIEW-->
-<ion-list *ngIf="IMAGECROPPEDMODE">
 
-  <ion-card class="page-home ion-card">
-    <ion-card-header>Cropped Image</ion-card-header>
-    <ion-card-content><img [src]="croppedImage"></ion-card-content>
 
-    <ion-list>
-      <ion-item class="page-home ItemSpace">
-        <ion-label>Label</ion-label>
-        <ion-select [(ngModel)]="selectedLabel">
-          <ion-option value = "None" >None</ion-option>
-          <ion-option *ngFor="let label of allLabels.labels" [value] = "label" >{{label}}</ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>
 
-    <div class="row">
-      <div class="col col-50">
-        <button
-          ion-button icon-start icon-only clear
-          float-start
-          (click)="saveAndUpload()"
-        >
-          <ion-icon name="checkmark-circle"></ion-icon>
-        </button>
-      </div>
-      <div class="col col-50">
-        <button
-          ion-button icon-start icon-only clear
-          float-end
-          (click)="cancelSaveAndUpload()"
-        >
-          <ion-icon
-            name="close-circle" color="danger"
-          ></ion-icon>
-        </button>
-      </div>
-    </div>
-  </ion-card>
-</ion-list>
+
+
+  <!--&lt;!&ndash;EDITED IMAGE VIEW&ndash;&gt;-->
+<!--<ion-list *ngIf="IMAGECROPPEDMODE">-->
+
+  <!--<ion-card class="page-home ion-card">-->
+    <!--<ion-card-header>Cropped Image</ion-card-header>-->
+    <!--<ion-card-content><img [src]="croppedImage"></ion-card-content>-->
+
+    <!--<ion-list>-->
+      <!--<ion-item class="page-home ItemSpace">-->
+        <!--<ion-label>Label</ion-label>-->
+        <!--<ion-select [(ngModel)]="selectedLabel">-->
+          <!--<ion-option value = "None" >None</ion-option>-->
+          <!--<ion-option *ngFor="let label of allLabels.labels" [value] = "label" >{{label}}</ion-option>-->
+        <!--</ion-select>-->
+      <!--</ion-item>-->
+    <!--</ion-list>-->
+
+    <!--<div class="row">-->
+      <!--<div class="col col-50">-->
+        <!--<button-->
+          <!--ion-button icon-start icon-only clear-->
+          <!--float-start-->
+          <!--(click)="storeImage()"-->
+        <!--&gt;-->
+          <!--<ion-icon name="custom-floppy-disk"></ion-icon>-->
+        <!--</button>-->
+      <!--</div>-->
+      <!--<div class="col col-50">-->
+        <!--<button-->
+          <!--ion-button icon-start icon-only clear-->
+          <!--float-end-->
+          <!--(click)="cancelStoreImage()"-->
+        <!--&gt;-->
+          <!--<ion-icon-->
+            <!--name="close-circle" color="danger"-->
+          <!--&gt;</ion-icon>-->
+        <!--</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</ion-card>-->
+<!--</ion-list>-->
 
 
 

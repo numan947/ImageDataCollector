@@ -1,4 +1,3 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {File} from "@ionic-native/file";
 import {ToastController} from "ionic-angular";
@@ -28,18 +27,30 @@ export class FileSaverProvider {
   }
 
   writeFile(base64Data: any, folderName: string, fileName: any = GENERIC_SAVE_FILE_NAME + (new Date().toDateString())) {
-
+    console.log("Inside WriteFile");
+    console.log(base64Data);
     this.file.createDir(this.file.externalRootDirectory, folderName, false).then(() => {
-
+      console.log("Inside CreateDir");
       let contentType = this.getContentType(base64Data);
+
+      console.log(contentType);
+
       let DataBlob = this.base64toBlob(base64Data, contentType);
+
+      console.log("datablob created ",DataBlob);
+
       let filePath = this.file.externalRootDirectory + folderName;
 
+      console.log(filePath);
+
+
+
       this.file.writeFile(filePath, fileName, DataBlob, contentType).then((success) => {
-        this.presentToast("Saved to: "+filePath+fileName);
+        console.log("Saved to -->", filePath);
+        // this.presentToast("Saved to: "+filePath+fileName);
       }).catch((err) => {
         console.log("Error Occured While Writing File", err);
-        this.presentToast("Error saving file.");
+        // this.presentToast("Error saving file.");
       });
     });
   }
@@ -48,11 +59,14 @@ export class FileSaverProvider {
   public getContentType(base64Data: any) {
     let block = base64Data.split(";");
     let contentType = block[0].split(":")[1];
+    console.log("Inside contentType ",contentType);
     return contentType;
   }
 
   //here is the method is used to convert base64 data to blob data
   public base64toBlob(b64Data, contentType) {
+
+    console.log("inside base64ToBlob");
     contentType = contentType || '';
     let sliceSize = 512;
     let byteCharacters = atob(b64Data);
