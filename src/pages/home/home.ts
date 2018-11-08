@@ -1,14 +1,15 @@
 import {Component} from '@angular/core';
-import {AlertController, Events, NavController, Platform, ToastController} from 'ionic-angular';
+import {NavController, Platform} from 'ionic-angular';
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {Labels} from "../../app/models/Labels";
 import {NetworkProvider} from "../../providers/network/network";
 import {FileSaverProvider} from "../../providers/file-saver/file-saver";
-import {File} from "@ionic-native/file";
 import {ToastProvider} from "../../providers/toast/toast";
 import {AlertProvider} from "../../providers/alert/alert";
 import {BackgroundProvider} from "../../providers/background/background";
-import {flatMap} from "rxjs/operators";
+import {LoadingScreenProvider} from "../../providers/loading-screen/loading-screen";
+import {ImageListPage} from "../image-list/image-list";
+import {ImageModel} from "../../app/models/ImageModel";
 //Input Field States
 /**
  * This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
@@ -35,7 +36,9 @@ export class HomePage {
   rafidProject: boolean = false;
 
   //TODO:REPLACE TEMPORARY
-  allLabels: Labels = new Labels(["THISISAVERYLONGLABEL", "THISISANOTHERLABEL", "MURGI", "BISHALBOROHATI"]);
+  allLabels: Labels = new Labels({"None":"None","LABEL1":"URL1","LABEL5":"URL5","LABEL4":"URL4","LABEL3":"URL3","LABEL2":"URL2"});
+
+
   selectedLabel: string = "None"; //By default none is selected
 
   GENERALMODE: boolean = true;
@@ -50,23 +53,25 @@ export class HomePage {
     destinationType: this.camera.DestinationType.FILE_URI,
     encodingType: this.camera.EncodingType.PNG,
     mediaType: this.camera.MediaType.PICTURE,
+    targetWidth:720,
+    targetHeight:720,
     sourceType: this.camera.PictureSourceType.CAMERA,
-    allowEdit: false
   };
 
 
   capturedImage: any = null;
 
 
-  constructor(public events: Events,
-              public navCtrl: NavController,
-              private camera: Camera,
-              public platform: Platform,
-              public networkProvider: NetworkProvider,
-              public fileSaver: FileSaverProvider,
-              public toastProvider: ToastProvider,
-              public alertProvider: AlertProvider,
-              public backgroundProvider: BackgroundProvider
+  constructor(
+    private navCtrl: NavController,
+    private camera: Camera,
+    private platform: Platform,
+    private networkProvider: NetworkProvider,
+    private fileSaver: FileSaverProvider,
+    private toastProvider: ToastProvider,
+    private alertProvider: AlertProvider,
+    private backgroundProvider: BackgroundProvider,
+    private loadingScreen:LoadingScreenProvider
   ) {
   }
 
@@ -74,7 +79,7 @@ export class HomePage {
   ionViewDidLoad() {
     this.platform.registerBackButtonAction(() => {
       if (this.IMAGECAPTUREDMODE)
-        this.captureImage();
+        this.setGeneralMode();
       else if (this.GENERALMODE){
         if(this.backgroundProvider.backgroundActive())
           this.backgroundProvider.moveToBackground();
@@ -90,17 +95,29 @@ export class HomePage {
     if(this.platform.is('cordova')) {
       this.platform.ready().then(() => {
         this.fileSaver.getLocalImages().then(result => {
-          if(result)
-            this.alertProvider.showInformationAlert(result.toString());
+          if(result) {
+            this.loadingScreen.showPageChangeLoadingScreen();
+            this.navCtrl.push(ImageListPage,{data:result});
+          }
           else
             this.alertProvider.showInformationAlert("No Saved Images");
         })
       });
     }
     else{
+      let result = [
+        new ImageModel("mock1","assets/mock-images/mock_image.jpg","Label1","UploadUrl1"),
+        new ImageModel("mock2","assets/imgs/logo.png","Label2","UploadUrl2"),
+        new ImageModel("mock3","assets/imgs/test.jpg","Label3","UploadUrl3"),
+        new ImageModel("mock4","assets/imgs/numan.jpg","Label4","UploadUrl4"),
+        new ImageModel("mock5","assets/imgs/shahad.jpg","Label5","UploadUrl5")];
+      this.loadingScreen.showPageChangeLoadingScreen();
+      this.navCtrl.push(ImageListPage,{data:result});
       console.log("Will Show Saved Images");
     }
   }
+
+
 
   showLabelSettings() {
     console.log("Inside showLabelSettings");
@@ -145,7 +162,7 @@ export class HomePage {
         this.alertProvider.showInformationAlert("Cannot Upload To Storage! Saving Locally!");
         this.platform.ready().then(()=>{
 
-          this.fileSaver.saveLocalImage(this.capturedImage);
+          this.fileSaver.saveLocalImage(this.capturedImage,this.selectedLabel,this.allLabels.getUrl(this.selectedLabel));
         });
       }
     }else{
@@ -159,9 +176,10 @@ export class HomePage {
       this.platform.ready().then(()=>{
         this.storeButtonDisabled = true;
         this.uploadButtonDisabled = true;
-        this.fileSaver.saveLocalImage(this.capturedImage);
+        this.fileSaver.saveLocalImage(this.capturedImage,this.selectedLabel,this.allLabels.getUrl(this.selectedLabel));
       });
     }else{
+      console.log(this.allLabels.getUrl(this.selectedLabel));
       this.alertProvider.showInformationAlert("Will Save to Localstorage");
       this.storeButtonDisabled = true;
       this.uploadButtonDisabled = true;

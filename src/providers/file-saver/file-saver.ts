@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {File} from "@ionic-native/file";
-import {Platform} from "ionic-angular";
+import {DateTime, Platform} from "ionic-angular";
 import {ToastProvider} from "../toast/toast";
 import {BackgroundProvider} from "../background/background";
 import {Storage} from "@ionic/storage";
+import {ImageModel} from "../../app/models/ImageModel";
 
 /*
   Generated class for the FileSaverProvider provider.
@@ -30,11 +31,11 @@ export class FileSaverProvider {
 
 
 
-  public saveLocalImage(imagePath){
+  public saveLocalImage(imagePath,label,uploadUrl){
     this.backgroundProvider.activateBackgroundMode();
     let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
     let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-    this.copyFileToLocalDir(correctPath,currentName,this.createFileName());
+    this.copyFileToLocalDir(correctPath,currentName,this.createFileName(),label,uploadUrl);
     this.backgroundProvider.deactivateBackgroundMode();
   }
 
@@ -59,24 +60,35 @@ export class FileSaverProvider {
   }
 
   private createFileName() {
-    var d = new Date(),n = d.getTime(),newFileName =  n + ".png";
+    var d = new Date(),n = d.getTime(),newFileName =  GENERIC_SAVE_FILE_NAME+n + ".png";
     return newFileName;
   }
 
-  private copyFileToLocalDir(namePath, currentName, newFileName) {
+  private copyFileToLocalDir(namePath, currentName, newFileName,label,uploadUrl) {
     this.file.copyFile(namePath, currentName, cordova.file.dataDirectory, newFileName).then(success => {
       let savedFilePath = this.pathForImage(newFileName);
+      let newImage:ImageModel = new ImageModel(newFileName,savedFilePath,label,uploadUrl);
       this.storage.get(SAVED_FILES).then(result=>{
         if(result){
-          result.push(savedFilePath);
-          this.storage.set(SAVED_FILES,savedFilePath);
+          result.push(newImage);
+          this.storage.set(SAVED_FILES,result);
         }
         else
-          this.storage.set(SAVED_FILES,[savedFilePath]);
+          this.storage.set(SAVED_FILES,[newImage]);
       });
       this.toastProvider.presentInofrmationToast("Saved to: "+savedFilePath);
     }, error => {
       this.toastProvider.presentInofrmationToast("Problem While Saving file "+error);
+    });
+  }
+
+  public deleteImage(image:ImageModel){
+    return this.storage.get(SAVED_FILES).then(results=>{
+      if(results){
+        let idx = results.indexOf(image);
+        results.splice(idx,1);
+        return this.storage.set(SAVED_FILES,results);
+      }
     });
   }
 

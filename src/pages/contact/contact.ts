@@ -3,6 +3,8 @@ import {AlertController, NavController} from 'ionic-angular';
 import {PersonalInfoProvider} from "../../providers/personal-info/personal-info";
 import {LoadingController} from 'ionic-angular';
 import {UserProfile} from "../../app/models/UserProfile";
+import {LoadingScreenProvider} from "../../providers/loading-screen/loading-screen";
+import {AlertProvider} from "../../providers/alert/alert";
 
 
 /**
@@ -51,23 +53,22 @@ export class ContactPage {
   * Main model class that contains user information. Initialized as empty.
   * */
   userDetails: UserProfile = new UserProfile("", "", "", "");
-  /**
-  * A loader object that's used to initiate and show loading screen.
-  * */
-  loader: any = null;
 
   /**
-  * This Constructor shows the loading screen.
-  * Then it fetches the user information from the local storage using the PersonalInfoProvider object.
-  * After the request is completed, it parses the data into local userDetails variable, which using data binding updates the view if necessary.
-  * After that, the EditMode or StaticMode is selected depending on whether userName property is set in userDetails.
-  * Loading screen is dismissed.
-  * @param{PersonalInfoProvider}personalInfo This is the storage provider object that handles the connection with local storage.
-  * @param{LoadingController}loadingCtrl This is a library object that handles the presenting and dismissing of Loading Screens.
-  * @param{AlertController}alertCtrl This is a library object that handles the presenting and dismissing of Alerts.
-   * @param{NavController}navCtrl This is a library object which can control navigation from this page to other pages.
-  * */
-  constructor(public navCtrl: NavController, private personalInfo: PersonalInfoProvider, private loadingCtrl: LoadingController, private alertCtrl: AlertController) {
+   * This Constructor shows the loading screen.
+   * Then it fetches the user information from the local storage using the PersonalInfoProvider object.
+   * After the request is completed, it parses the data into local userDetails variable, which using data binding updates the view if necessary.
+   * After that, the EditMode or StaticMode is selected depending on whether userName property is set in userDetails.
+   * Loading screen is dismissed.
+   * @param{PersonalInfoProvider}personalInfo This is the storage provider object that handles the connection with local storage.
+   *  @param{NavController}navCtrl This is a library object which can control navigation from this page to other pages.
+   * @param loadingProvider
+   * @param alertProvider
+   *  */
+  constructor(public navCtrl: NavController,
+              private personalInfo: PersonalInfoProvider,
+              private loadingProvider:LoadingScreenProvider,
+              private alertProvider:AlertProvider) {
       this.presentLoading();
       this.personalInfo.getUserInfo().then(promise => {
 
@@ -103,17 +104,18 @@ export class ContactPage {
         this.dismissLoading();
       })
     } else {
-      this.alertCtrl.create({
-        title: "We Need You!",
-        subTitle: "Your name will be set as Anonymous, if no information is given."
-      }).addButton({
-        text: "Ok"
-      }).addButton({
-        text: "Set Anonymous",
-        handler: data => {
-          this.userDetails.userName = "Anonymous";
-        }
-      }).present();
+      //TODO: ADD CUSTOM ALERT MAKING CODE HERE
+      // this.alertCtrl.create({
+      //   title: "We Need You!",
+      //   subTitle: "Your name will be set as Anonymous, if no information is given."
+      // }).addButton({
+      //   text: "Ok"
+      // }).addButton({
+      //   text: "Set Anonymous",
+      //   handler: data => {
+      //     this.userDetails.userName = "Anonymous";
+      //   }
+      // }).present();
     }
   }
 
@@ -139,16 +141,13 @@ export class ContactPage {
   * Dismisses the loading screen.
   * */
   dismissLoading() {
-    this.loader.dismiss();
+    this.loadingProvider.dismissGeneralLoadingScreen();
   }
   /**
   * Creates and presents basic loading screen.
   * */
   presentLoading() {
-    this.loader = this.loadingCtrl.create({
-      content: "Please wait....",
-    });
-    this.loader.present();
+    this.loadingProvider.showGeneralLoadingScreen();
   }
 
 

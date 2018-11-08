@@ -78,8 +78,7 @@
         <ion-item class="page-home ItemSpace">
           <ion-label>Label</ion-label>
           <ion-select [(ngModel)]="selectedLabel">
-            <ion-option value = "None" >None</ion-option>
-            <ion-option *ngFor="let label of allLabels.labels" [value] = "label" >{{label}}</ion-option>
+            <ion-option *ngFor="let label of allLabels.getLabels()" [value] = "label" >{{label}}</ion-option>
           </ion-select>
         </ion-item>
       </ion-list>
