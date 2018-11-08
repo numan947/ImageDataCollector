@@ -122,16 +122,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    this.platform.registerBackButtonAction(() => {
-      if (this.IMAGECAPTUREDMODE)
-        this.setGeneralMode();
-      else if (this.GENERALMODE) {
-        if (this.backgroundProvider.backgroundActive())
-          this.backgroundProvider.moveToBackground();
-        else
-          this.platform.exitApp();
-      }
-    });
+
   }
 
 

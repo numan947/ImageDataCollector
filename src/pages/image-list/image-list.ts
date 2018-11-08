@@ -33,10 +33,8 @@ export class ImageListPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ImageListPage');
-    this.platform.registerBackButtonAction(() => {
-      this.navCtrl.pop();
-    });
   }
+
   deleteItem(item:ImageModel){
       this.loadingProvider.showGeneralLoadingScreen();
       this.platform.ready().then(() => {

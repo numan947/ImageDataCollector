@@ -61,9 +61,6 @@ export class LabelSettingsPage {
 
   ionViewDidLoad(){
       console.log('ionViewDidLoad LabelSettingsPage');
-      this.platform.registerBackButtonAction(() => {
-      this.navCtrl.pop();
-    });
   }
 
   addNewLabel(){
