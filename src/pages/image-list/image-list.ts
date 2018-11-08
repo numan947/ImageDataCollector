@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {FileSaverProvider} from "../../providers/file-saver/file-saver";
 import {LoadingScreenProvider} from "../../providers/loading-screen/loading-screen";
+import {ImageModel} from "../../app/models/ImageModel";
+import {AlertProvider} from "../../providers/alert/alert";
 
 /**
  * Generated class for the ImageListPage page.
@@ -16,13 +18,14 @@ import {LoadingScreenProvider} from "../../providers/loading-screen/loading-scre
   templateUrl: 'image-list.html',
 })
 export class ImageListPage {
-  private imageList:any= null;
+  private imageList:Array<ImageModel>= null;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private fileSaver:FileSaverProvider,
     private platform:Platform,
-    private loadingProvider:LoadingScreenProvider
+    private loadingProvider:LoadingScreenProvider,
+    private alertProvider:AlertProvider
   ) {
     this.imageList = this.navParams.get('data');
     console.log(this.imageList)
@@ -34,23 +37,19 @@ export class ImageListPage {
       this.navCtrl.pop();
     });
   }
-
-  deleteItem(item){
-    let idx = this.imageList.indexOf(item);
-    this.imageList.splice(idx,1);
-    console.log(idx);
-
-    if(this.platform.is('cordova')) {
+  deleteItem(item:ImageModel){
       this.loadingProvider.showGeneralLoadingScreen();
       this.platform.ready().then(() => {
-        this.fileSaver.deleteImage(idx).then(()=>{
+        this.fileSaver.deleteLocalImage(item).then(()=>{
+          let idx = this.imageList.indexOf(item);
+          this.imageList.splice(idx,1);
+          console.log(idx);
           this.loadingProvider.dismissGeneralLoadingScreen();
           if(!Boolean(Object.keys(this.imageList)[0])){
             this.navCtrl.pop();
           }
         });
       });
-    }
   }
 
 }

@@ -46,6 +46,15 @@ export class FileSaverProvider {
     return this.storage.get(SAVED_FILES);
   }
 
+  public deleteLocalImage(image: ImageModel){
+    return this.storage.get(SAVED_FILES).then(results=>{
+      if(results){
+        let idx = results.indexOf(image);
+        results.splice(idx,1);
+        return this.storage.set(SAVED_FILES,results);
+      }
+    });
+  }
 
 
   public pathForImage(img) {
@@ -85,22 +94,15 @@ export class FileSaverProvider {
     });
   }
 
-  public deleteImage(image:ImageModel){
-    return this.storage.get(SAVED_FILES).then(results=>{
-      if(results){
-        let idx = results.indexOf(image);
-        results.splice(idx,1);
-        return this.storage.set(SAVED_FILES,results);
-      }
-    });
-  }
+
+
+
 
 
 
   public getLabels(){
     return this.storage.get(SAVED_LABELS);
   }
-
   public addLabel(label:LabelModel){
     this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(result=>{
@@ -113,7 +115,6 @@ export class FileSaverProvider {
         return this.storage.set(SAVED_LABELS,[label]);
     });
   }
-
   public deleteLabel(label:LabelModel){
     this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(results=>{
