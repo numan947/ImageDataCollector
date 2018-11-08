@@ -5,6 +5,7 @@ import {ToastProvider} from "../toast/toast";
 import {BackgroundProvider} from "../background/background";
 import {Storage} from "@ionic/storage";
 import {ImageModel} from "../../app/models/ImageModel";
+import {LabelModel} from "../../app/models/LabelModel";
 
 /*
   Generated class for the FileSaverProvider provider.
@@ -15,10 +16,12 @@ import {ImageModel} from "../../app/models/ImageModel";
 
 const GENERIC_SAVE_FILE_NAME = "SIMPLE_IMAGE_COLLECTOR_APP_";
 const SAVED_FILES = "SAVED_FILES_FOR_UPLOADING_LATER";
+const SAVED_LABELS = "SAVED_LABELS_FOR_UPLOADING_IMAGES";
 
 declare var cordova:any;
 @Injectable()
 export class FileSaverProvider {
+  public labelsChanged:boolean = false;
 
   constructor(private file: File,
               private toastProvider:ToastProvider,
@@ -88,6 +91,41 @@ export class FileSaverProvider {
         let idx = results.indexOf(image);
         results.splice(idx,1);
         return this.storage.set(SAVED_FILES,results);
+      }
+    });
+  }
+
+
+
+  public getLabels(){
+    return this.storage.get(SAVED_LABELS);
+  }
+  public addLabel(label:LabelModel){
+    return this.storage.get(SAVED_LABELS).then(result=>{
+      if(result){
+        result.push(label);
+        return this.storage.set(SAVED_LABELS,result);
+      }
+      else
+        return this.storage.set(SAVED_LABELS,[label]);
+    });
+  }
+
+  public deleteLabel(label:LabelModel){
+    return this.storage.get(SAVED_LABELS).then(results=>{
+      if(results){
+        let idx = results.indexOf(label);
+        results.splice(idx,1);
+        return this.storage.set(SAVED_LABELS,results);
+      }
+    });
+  }
+  public editLabel(prevLabel:LabelModel,newLabel:LabelModel){
+    return this.storage.get(SAVED_LABELS).then(results=>{
+      if(results){
+        let idx = results.indexOf(prevLabel);
+        results[idx] = newLabel;
+        return this.storage.set(SAVED_LABELS,results);
       }
     });
   }

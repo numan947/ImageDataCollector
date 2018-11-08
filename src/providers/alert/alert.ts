@@ -25,4 +25,9 @@ export class AlertProvider {
     this.alert.present();
   }
 
+  public showTextBoxAlert(options){
+    this.alert = this.alertCtrl.create(options);
+    this.alert.present();
+  }
+
 }

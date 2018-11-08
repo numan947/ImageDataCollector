@@ -16,7 +16,7 @@ import {LoadingScreenProvider} from "../../providers/loading-screen/loading-scre
   templateUrl: 'image-list.html',
 })
 export class ImageListPage {
-  imageList= null;
+  private imageList:any= null;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -45,6 +45,9 @@ export class ImageListPage {
       this.platform.ready().then(() => {
         this.fileSaver.deleteImage(idx).then(()=>{
           this.loadingProvider.dismissGeneralLoadingScreen();
+          if(!Boolean(Object.keys(this.imageList)[0])){
+            this.navCtrl.pop();
+          }
         });
       });
     }

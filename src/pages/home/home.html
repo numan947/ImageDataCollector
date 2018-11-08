@@ -78,7 +78,7 @@
         <ion-item class="page-home ItemSpace">
           <ion-label>Label</ion-label>
           <ion-select [(ngModel)]="selectedLabel">
-            <ion-option *ngFor="let label of allLabels.getLabels()" [value] = "label" >{{label}}</ion-option>
+            <ion-option *ngFor="let label of allLabels" [value] = "label" >{{label.labelName}}</ion-option>
           </ion-select>
         </ion-item>
       </ion-list>
