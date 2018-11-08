@@ -9,7 +9,7 @@ const PERSONALINFO = "personal_information";
 @Injectable()
 export class PersonalInfoProvider {
 
-  constructor(public storage:Storage) {
+  constructor(private storage:Storage) {
     console.log('Hello PersonalInfoProvider Provider');
   }
 

@@ -1,21 +1,21 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Home</ion-title>
-    <ion-toolbar>
-      <ion-buttons>
-        <button
-          ion-button icon-only float-start color="danger"
-          *ngIf="!GENERALMODE"
-          tooltip="Discard all changes" positionV="bottom" duration="1200"
-          (click)="discardAllChanges()"
-        >
-          <ion-icon name="custom-fire" ></ion-icon>
-        </button>
-        <button ion-button icon-only color="secondary" float-end>
-          <ion-icon [name]="cloudSyncState"></ion-icon>
-        </button>
-      </ion-buttons>
-    </ion-toolbar>
+    <!--<ion-toolbar>-->
+      <!--<ion-buttons>-->
+        <!--<button-->
+          <!--ion-button icon-only float-start color="danger"-->
+          <!--*ngIf="!GENERALMODE"-->
+          <!--tooltip="Discard all changes" positionV="bottom" duration="1200"-->
+          <!--(click)="discardAllChanges()"-->
+        <!--&gt;-->
+          <!--<ion-icon name="custom-fire" ></ion-icon>-->
+        <!--</button>-->
+        <!--<button ion-button icon-only color="secondary" float-end>-->
+          <!--<ion-icon [name]="cloudSyncState"></ion-icon>-->
+        <!--</button>-->
+      <!--</ion-buttons>-->
+    <!--</ion-toolbar>-->
   </ion-navbar>
 </ion-header>
 
@@ -67,15 +67,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
   <!--EDITED IMAGE VIEW-->
   <ion-list *ngIf="IMAGECAPTUREDMODE">
 
@@ -94,35 +85,48 @@
       </ion-list>
 
       <div class="row">
-        <div class="col col-50">
+        <div class="col col-25">
           <button
             ion-button icon-start icon-only clear
             float-start
-            (click)="storeImage()"
+            (click)="storeImage()" [disabled] ="storeButtonDisabled"
           >
             <ion-icon name="custom-floppy-disk"></ion-icon>
           </button>
         </div>
-        <div class="col col-50">
+        <div class="col col-25">
+          <button
+            ion-button icon-start icon-only clear
+            float-start=""
+            (click)="uploadImage()"
+            [disabled] ="uploadButtonDisabled"
+          >
+            <ion-icon name="custom-cloud-upload"></ion-icon>
+          </button>
+        </div>
+        <div class="col col-25">
+          <button
+            ion-button icon-end icon-only clear
+            float-end
+            (click)="captureImage()"
+          >
+            <ion-icon name="custom-spinner9"></ion-icon>
+          </button>
+        </div>
+        <div class="col col-25">
           <button
             ion-button icon-start icon-only clear
             float-end
-            (click)="cancelStoreImage()"
+            (click)="setGeneralMode()"
           >
             <ion-icon
-              name="close-circle" color="danger"
+              name="custom-fire" color="danger"
             ></ion-icon>
           </button>
         </div>
       </div>
     </ion-card>
   </ion-list>
-
-
-
-
-
-
 
 
 </ion-content>

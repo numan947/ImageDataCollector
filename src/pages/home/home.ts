@@ -5,6 +5,10 @@ import {Labels} from "../../app/models/Labels";
 import {NetworkProvider} from "../../providers/network/network";
 import {FileSaverProvider} from "../../providers/file-saver/file-saver";
 import {File} from "@ionic-native/file";
+import {ToastProvider} from "../../providers/toast/toast";
+import {AlertProvider} from "../../providers/alert/alert";
+import {BackgroundProvider} from "../../providers/background/background";
+import {flatMap} from "rxjs/operators";
 //Input Field States
 /**
  * This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
@@ -37,7 +41,8 @@ export class HomePage {
   GENERALMODE: boolean = true;
   IMAGECAPTUREDMODE: boolean = false;
 
-  imagePathForShowing:any = null;
+  storeButtonDisabled:boolean = true;
+  uploadButtonDisabled:boolean = true;
 
 
   CAMERAOPTIONS: CameraOptions = {
@@ -57,37 +62,44 @@ export class HomePage {
               public navCtrl: NavController,
               private camera: Camera,
               public platform: Platform,
-              public alertCtrl: AlertController,
               public networkProvider: NetworkProvider,
               public fileSaver: FileSaverProvider,
-              public toastCtrl: ToastController,
-              public file:File
+              public toastProvider: ToastProvider,
+              public alertProvider: AlertProvider,
+              public backgroundProvider: BackgroundProvider
   ) {
   }
 
-  discardAllChanges() {
-    this.setGeneralMode();
-  }
 
   ionViewDidLoad() {
     this.platform.registerBackButtonAction(() => {
       if (this.IMAGECAPTUREDMODE)
         this.captureImage();
-      else if (this.GENERALMODE)
-        this.platform.exitApp();
+      else if (this.GENERALMODE){
+        if(this.backgroundProvider.backgroundActive())
+          this.backgroundProvider.moveToBackground();
+        else
+          this.platform.exitApp();
+      }
     });
   }
 
-  showError(errorMessage) {
-    this.alertCtrl.create({
-      title: "Information!",
-      subTitle: errorMessage,
-      buttons: ["Ok"]
-    }).present();
-  }
 
   showSavedImages() {
     console.log("Inside showSavedImages");
+    if(this.platform.is('cordova')) {
+      this.platform.ready().then(() => {
+        this.fileSaver.getLocalImages().then(result => {
+          if(result)
+            this.alertProvider.showInformationAlert(result.toString());
+          else
+            this.alertProvider.showInformationAlert("No Saved Images");
+        })
+      });
+    }
+    else{
+      console.log("Will Show Saved Images");
+    }
   }
 
   showLabelSettings() {
@@ -101,76 +113,58 @@ export class HomePage {
 
   captureImage() {
     console.log("Inside CaptureImage");
-    // // return;//TODO REMOVE LATER
+
     if (this.platform.is('cordova')) {
       this.camera.getPicture(this.CAMERAOPTIONS).then(imagePath => {
-
-        let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-        let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
         this.capturedImage = imagePath;
-        this.imagePathForShowing = this.capturedImage;
-        console.log(this.imagePathForShowing);
-        // this.copyFileToLocalDir(correctPath,currentName,this.createFileName());
-        // this.showError(this.capturedImage);
+        this.storeButtonDisabled=false;
+        this.uploadButtonDisabled = false;
         this.setImageCaptureMode();
       }).catch(err => {
         console.log("WEIRD ERROR HAPPENED");
-        if (!(err == "No Image Selected"))
-          this.showError(err);
+        if (!(err == "No Image Selected")) {
+          this.alertProvider.showInformationAlert(err);
+        }
       });
     } else {
+      this.storeButtonDisabled=false;
+      this.uploadButtonDisabled = false;
       this.capturedImage = "assets/mock-images/mock_image.jpg";
-      this.imagePathForShowing = this.capturedImage;
       this.setImageCaptureMode();
     }
   }
 
-  cancelStoreImage(){
-    this.setGeneralMode();
-  }
+  uploadImage(){
+    this.uploadButtonDisabled = true;
+    this.storeButtonDisabled = true;
 
-  private createFileName() {
-    var d = new Date(),n = d.getTime(),newFileName =  n + ".png";
-    return newFileName;
-  }
-  private copyFileToLocalDir(namePath, currentName, newFileName) {
-    console.log(namePath);
-    console.log(currentName);
-    console.log(newFileName);
+    if (this.platform.is("cordova")) {
+      if (this.networkProvider.isConnected()) {
+        this.toastProvider.presentInofrmationToast("Will Upload to storage");
+      } else {
+        this.alertProvider.showInformationAlert("Cannot Upload To Storage! Saving Locally!");
+        this.platform.ready().then(()=>{
 
-    this.file.copyFile(namePath, currentName, cordova.file.dataDirectory, newFileName).then(success => {
-      this.capturedImage = newFileName;
-    }, error => {
-      this.presentToast('Error while storing file.');
-    });
-  }
-
-  private presentToast(text) {
-    let toast = this.toastCtrl.create({
-      message: text,
-      duration: 3000,
-      position: 'top'
-    });
-    toast.present();
+          this.fileSaver.saveLocalImage(this.capturedImage);
+        });
+      }
+    }else{
+      this.alertProvider.showInformationAlert("Will Upload to RemoteStorage");
+    }
   }
 
 
   storeImage() {
-    console.log("Inside saveAndUpload ", this.selectedLabel);
-    if (this.platform.is("cordova")) {
-      if (this.networkProvider.isConnected()) {
-        this.showError("WILL UPLOAD TO STORAGE: ");
-        const toast = this.toastCtrl.create({
-          message: "WTF",
-          duration: 3000
-        });
-        toast.present();
-      } else {
-        this.showError("Network not available, saving to local storage");
-        this.platform.ready().then(()=>{
-          // this.fileSaver.writeFile(this.croppedImage, this.selectedLabel);
-        });
-      }
+    if(this.platform.is('cordova')){
+      this.platform.ready().then(()=>{
+        this.storeButtonDisabled = true;
+        this.uploadButtonDisabled = true;
+        this.fileSaver.saveLocalImage(this.capturedImage);
+      });
+    }else{
+      this.alertProvider.showInformationAlert("Will Save to Localstorage");
+      this.storeButtonDisabled = true;
+      this.uploadButtonDisabled = true;
     }
   }
 
