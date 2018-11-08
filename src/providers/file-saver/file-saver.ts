@@ -100,8 +100,11 @@ export class FileSaverProvider {
   public getLabels(){
     return this.storage.get(SAVED_LABELS);
   }
+
   public addLabel(label:LabelModel){
+    this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(result=>{
+
       if(result){
         result.push(label);
         return this.storage.set(SAVED_LABELS,result);
@@ -112,6 +115,7 @@ export class FileSaverProvider {
   }
 
   public deleteLabel(label:LabelModel){
+    this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(results=>{
       if(results){
         let idx = results.indexOf(label);
@@ -121,6 +125,7 @@ export class FileSaverProvider {
     });
   }
   public editLabel(prevLabel:LabelModel,newLabel:LabelModel){
+    this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(results=>{
       if(results){
         let idx = results.indexOf(prevLabel);

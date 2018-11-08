@@ -45,7 +45,7 @@ export class HomePage {
   storeButtonDisabled: boolean = true;
   uploadButtonDisabled: boolean = true;
 
-  private allLabels:Array<LabelModel> = null;
+  private allLabels: Array<LabelModel> = null;
 
 
   CAMERAOPTIONS: CameraOptions = {
@@ -77,26 +77,45 @@ export class HomePage {
 
   loadLabels() {
     console.log("Inside Load Labels");
-    // console.log(Object.keys(this.allLabels));
-    if (!(this.allLabels) || this.fileSaver.labelsChanged) {
-      this.loadingScreen.showGeneralLoadingScreen();
-      this.platform.ready().then(() => {
-        this.fileSaver.getLabels().then(result => {
+
+    this.loadingScreen.showGeneralLoadingScreen();
+    this.platform.ready().then(() => {
+      this.fileSaver.getLabels().then(result => {
+        console.log(result);
+        if (!result || !Boolean(Object.keys(result)[0])) {
+          this.allLabels = null;
+        }else {
           this.allLabels = result;
-          if(!result || !Boolean(Object.keys(result)[0])){
-            this.allLabels = [
-              new LabelModel("lab1","ur1"),
-              new LabelModel("lab2","ur2"),
-              new LabelModel("lab3","ur3"),
-              new LabelModel("lab4","ur4"),
-              new LabelModel("lab5","ur5")
-            ];
-          }
-          this.loadingScreen.dismissGeneralLoadingScreen();
-        });
+          console.log(this.allLabels);
+        }
+        this.fileSaver.labelsChanged = false;
+        this.loadingScreen.dismissGeneralLoadingScreen();
+
+        if(!this.allLabels){
+          let alertForUpdatingSettings:any={
+            title: "<h6>YOU MUST ADD LABELS FIRST</h6>",
+            message:"<img ion-text src='assets/imgs/doctor_strange.png'>",
+            buttons:[
+              {
+                text:"Teach Me!",
+                handler:()=>{
+                  this.navCtrl.push(LabelSettingsPage);
+                }
+              },
+              {
+                text:"Later",
+                handler:()=>{
+
+                }
+              }
+            ]
+          };
+          this.alertProvider.showTextBoxAlert(alertForUpdatingSettings);
+        }
       });
-    }
+    });
   }
+
 
   ionViewWillEnter() {
     this.loadLabels();
@@ -157,7 +176,6 @@ export class HomePage {
 
   captureImage() {
     console.log("Inside CaptureImage");
-
     if (this.platform.is('cordova')) {
       this.camera.getPicture(this.CAMERAOPTIONS).then(imagePath => {
         this.capturedImage = imagePath;
@@ -179,7 +197,7 @@ export class HomePage {
   }
 
   uploadImage() {
-    if(!(this.selectedLabel)){
+    if (!(this.selectedLabel)) {
       this.alertProvider.showInformationAlert("You Must Select A Label");
       return;
     }
@@ -203,7 +221,7 @@ export class HomePage {
 
 
   storeImage() {
-    if((!this.selectedLabel)){
+    if ((!this.selectedLabel)) {
       this.alertProvider.showInformationAlert("You Must Select A Label");
       return;
     }

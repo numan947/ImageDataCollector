@@ -36,8 +36,8 @@ export class LabelSettingsPage {
 
   loadLabels(){
     this.platform.ready().then(()=>{
+      this.loadingScreen.showGeneralLoadingScreen();
       this.fileSaver.getLabels().then(result => {
-        this.allLabels = result;
         if(!result || !Boolean(Object.keys(result)[0])){
           // this.allLabels = [
           //   new LabelModel("lab1","ur1"),
@@ -48,6 +48,10 @@ export class LabelSettingsPage {
           // ];
           this.allLabels = null;
         }
+        else{
+          this.allLabels = result;
+        }
+        this.loadingScreen.dismissGeneralLoadingScreen();
     });
   });
 }
@@ -57,6 +61,9 @@ export class LabelSettingsPage {
 
   ionViewDidLoad(){
       console.log('ionViewDidLoad LabelSettingsPage');
+      this.platform.registerBackButtonAction(() => {
+      this.navCtrl.pop();
+    });
   }
 
   addNewLabel(){
@@ -72,7 +79,8 @@ export class LabelSettingsPage {
         },
         {
           name:"labelUrl",
-          placeholder:"Label Url"
+          placeholder:"Label Url",
+          type:"url"
         }
       ],
       buttons:[
@@ -89,6 +97,8 @@ export class LabelSettingsPage {
             this.loadingScreen.showGeneralLoadingScreen();
             this.platform.ready().then(()=>{
               this.fileSaver.addLabel(newLabel).then(()=>{
+                if(this.allLabels==null)
+                  this.allLabels=[];
                 this.allLabels.push(newLabel);
                 this.loadingScreen.dismissGeneralLoadingScreen();
               });
@@ -115,7 +125,8 @@ export class LabelSettingsPage {
         {
           name:"labelUrl",
           placeholder:"Label Url",
-          value:oldLabel.labelUrl
+          value:oldLabel.labelUrl,
+          type:"url"
         }
       ],
       buttons:[
@@ -163,6 +174,8 @@ export class LabelSettingsPage {
               this.fileSaver.deleteLabel(oldLabel).then(()=>{
                 let idx = this.allLabels.indexOf(oldLabel);
                 this.allLabels.splice(idx,1);
+                if(this.allLabels.length == 0)
+                  this.allLabels=null;
                 this.loadingScreen.dismissGeneralLoadingScreen();
               });
             });

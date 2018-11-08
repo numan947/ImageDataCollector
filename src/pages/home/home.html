@@ -48,6 +48,7 @@
       <button
         ion-button block full round icon-start
         *ngIf="shahadProject"
+        [disabled]="!allLabels"
         (click)="captureImage()"
         tooltip="Capture Image" positionV="bottom" duration="1200">
         <ion-icon name="camera"></ion-icon>
