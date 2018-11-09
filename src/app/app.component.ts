@@ -13,13 +13,15 @@ import {ToastProvider} from "../providers/toast/toast";
 export class MyApp {
   rootPage:any = TabsPage;
   public netWorkStatus:boolean = false;
-
-  constructor(platform: Platform,
-              statusBar: StatusBar,
-              splashScreen: SplashScreen,
-              app:App,
-              toastProvider:ToastProvider,
-              backgorundProvider:BackgroundProvider
+  lastBack = 0;
+  allowClose=false;
+  constructor( public platform: Platform,
+              public statusBar: StatusBar,
+              public splashScreen: SplashScreen,
+              public app:App,
+              public toastProvider:ToastProvider,
+              public backgorundProvider:BackgroundProvider,
+              public toastCtrl:ToastController
               ) {
     platform.ready().then(() => {
 
@@ -32,8 +34,7 @@ export class MyApp {
       if(platform.is('cordova')) {
       statusBar.backgroundColorByHexString('#ffffff');
 
-      let lastBack = 0;
-      let allowClose=false;
+
         platform.registerBackButtonAction(() => {
           const overlay = app._appRoot._overlayPortal.getActive();
           const nav = app.getActiveNav();
@@ -44,31 +45,32 @@ export class MyApp {
             overlay.dismiss();
           } else if(nav.canGoBack()){
             nav.pop();
-          } else if(Date.now() - lastBack > spamDelay && !allowClose) {
-            allowClose = true;
+          } else if(Date.now() - this.lastBack > spamDelay && !this.allowClose) {
+            this.allowClose = true;
             let toast = toastCtrl.create({
-              message: "Double Tap To Close",
+              message: "Press Back Again To Close",
               duration: closeDelay,
               dismissOnPageChange: true
             });
             toast.onDidDismiss(() => {
-              allowClose = false;
+              this.allowClose = false;
             });
             toast.present();
-          } else if(Date.now() - lastBack < closeDelay && allowClose) {
-            if(backgorundProvider.backgroundActive()){
+          } else if(Date.now() - this.lastBack < closeDelay && this.allowClose) {
 
+            if(this.backgorundProvider.backgroundActive()){
+              // this.toastProvider.presentInofrmationToast("Moving To Background");
+              this.backgorundProvider.moveToBackground();
             }
-            platform.exitApp();
+            else
+              platform.exitApp();
           }
-          lastBack = Date.now();
+          this.lastBack = Date.now();
         });
 
-
       }
-
-
-
-  });
+    });
   }
+
+
 }

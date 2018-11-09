@@ -24,4 +24,13 @@ export class ToastProvider {
     this.toast.present();
   }
 
+  public customToast(toastSettings:any,dissmissFun:any){
+    if(this.toast)
+      this.toast.dismissAll();
+    this.toast = this.toastCtrl.create(toastSettings);
+    this.toast.onDidDismiss(dissmissFun);
+    this.toast.present();
+  }
+
+
 }

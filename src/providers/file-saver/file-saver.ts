@@ -51,7 +51,10 @@ export class FileSaverProvider {
       if(results){
         let idx = results.indexOf(image);
         results.splice(idx,1);
-        return this.storage.set(SAVED_FILES,results);
+        if(results.length>0)
+          return this.storage.set(SAVED_FILES,results);
+        else
+          return this.storage.remove(SAVED_FILES);
       }
     });
   }
@@ -121,7 +124,10 @@ export class FileSaverProvider {
       if(results){
         let idx = results.indexOf(label);
         results.splice(idx,1);
-        return this.storage.set(SAVED_LABELS,results);
+        if(results.length>0)
+          return this.storage.set(SAVED_LABELS,results);
+        else
+          return this.storage.remove(SAVED_LABELS);
       }
     });
   }

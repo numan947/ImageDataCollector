@@ -8,9 +8,9 @@ import {AlertProvider} from "../../providers/alert/alert";
 import {BackgroundProvider} from "../../providers/background/background";
 import {LoadingScreenProvider} from "../../providers/loading-screen/loading-screen";
 import {ImageListPage} from "../image-list/image-list";
-import {ImageModel} from "../../app/models/ImageModel";
 import {LabelSettingsPage} from "../label-settings/label-settings";
 import {LabelModel} from "../../app/models/LabelModel";
+import {Diagnostic} from "@ionic-native/diagnostic";
 //Input Field States
 /**
  * This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
@@ -71,7 +71,8 @@ export class HomePage {
     private toastProvider: ToastProvider,
     private alertProvider: AlertProvider,
     private backgroundProvider: BackgroundProvider,
-    private loadingScreen: LoadingScreenProvider
+    private loadingScreen: LoadingScreenProvider,
+    private diagnostic:Diagnostic
   ) {
   }
 
@@ -82,7 +83,7 @@ export class HomePage {
     this.platform.ready().then(() => {
       this.fileSaver.getLabels().then(result => {
         console.log(result);
-        if (!result || !Boolean(Object.keys(result)[0])) {
+        if (!result) {
           this.allLabels = null;
         }else {
           this.allLabels = result;
@@ -126,21 +127,26 @@ export class HomePage {
   }
 
 
+
+
   showSavedImages() {
     console.log("Inside showSavedImages");
-    if (this.platform.is('cordova')) {
+
+    // if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
         this.fileSaver.getLocalImages().then(result => {
-          console.log(Boolean(Object.keys(result)[0]));
-          if (result && Boolean(Object.keys(result)[0])) {
-            this.loadingScreen.showPageChangeLoadingScreen();
-            this.navCtrl.push(ImageListPage, {data: result});
+          // console.log(Boolean(Object.keys(result)[0]));
+          if(result) {
+            if (Boolean(Object.keys(result)[0])) {
+              this.loadingScreen.showPageChangeLoadingScreen();
+              this.navCtrl.push(ImageListPage, {data: result});
+              return;
+            }
           }
-          else
-            this.alertProvider.showInformationAlert("No Saved Images");
+          this.alertProvider.showInformationAlert("No Saved Images");
         })
       });
-    }
+/*    }
     else {
       let result = [
         new ImageModel("mock1", "assets/mock-images/mock_image.jpg", "Label1", "UploadUrl1"),
@@ -151,7 +157,7 @@ export class HomePage {
       this.loadingScreen.showPageChangeLoadingScreen();
       this.navCtrl.push(ImageListPage, {data: result});
       console.log("Will Show Saved Images");
-    }
+    }*/
   }
 
 
@@ -162,12 +168,22 @@ export class HomePage {
 
   importFromSource() {
     console.log("Inside importFromSource");
+    if(this.backgroundProvider.backgroundActive())
+      this.backgroundProvider.deactivateBackgroundMode();
+    else
+      this.backgroundProvider.activateBackgroundMode();
   }
 
 
+
+  private getImageFromCamera(){
+
+  }
+
   captureImage() {
-    console.log("Inside CaptureImage");
+    console.log("Inside Capture Image");
     if (this.platform.is('cordova')) {
+
       this.camera.getPicture(this.CAMERAOPTIONS).then(imagePath => {
         this.capturedImage = imagePath;
         this.storeButtonDisabled = false;
@@ -179,6 +195,23 @@ export class HomePage {
           this.alertProvider.showInformationAlert(err);
         }
       });
+      // console.log("ABOUT TO ASK PERMISSION");
+      // this.diagnostic.getPermissionAuthorizationStatus(this.diagnostic.permission.CAMERA).then((status) => {
+      //   console.log(`AuthorizationStatus`);
+      //   console.log(status);
+      //   if (status != this.diagnostic.permissionStatus.GRANTED) {
+      //     this.diagnostic.requestRuntimePermission(this.diagnostic.permission.CAMERA).then((data) => {
+      //       console.log(`getCameraAuthorizationStatus`);
+      //       console.log(data);
+      //     })
+      //   } else {
+      //     console.log("We have the permission");
+      //     this.getImageFromCamera();
+      //   }
+      // }, (statusError) => {
+      //   console.log(`statusError`);
+      //   console.log(statusError);
+      // });
     } else {
       this.storeButtonDisabled = false;
       this.uploadButtonDisabled = false;

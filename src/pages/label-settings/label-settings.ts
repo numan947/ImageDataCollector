@@ -38,18 +38,11 @@ export class LabelSettingsPage {
     this.platform.ready().then(()=>{
       this.loadingScreen.showGeneralLoadingScreen();
       this.fileSaver.getLabels().then(result => {
-        if(!result || !Boolean(Object.keys(result)[0])){
-          // this.allLabels = [
-          //   new LabelModel("lab1","ur1"),
-          //   new LabelModel("lab2","ur2"),
-          //   new LabelModel("lab3","ur3"),
-          //   new LabelModel("lab4","ur4"),
-          //   new LabelModel("lab5","ur5")
-          // ];
+        if(!result){
           this.allLabels = null;
         }
         else{
-          this.allLabels = result;
+            this.allLabels = result;
         }
         this.loadingScreen.dismissGeneralLoadingScreen();
     });
