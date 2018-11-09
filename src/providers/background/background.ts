@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BackgroundMode} from "@ionic-native/background-mode";
+import {Platform} from "ionic-angular";
 
 /*
   Generated class for the BackgroundProvider provider.
@@ -9,9 +10,14 @@ import {BackgroundMode} from "@ionic-native/background-mode";
 */
 @Injectable()
 export class BackgroundProvider {
+  public processInBGD:number = 0;
 
-  constructor(private backgroundCtrl:BackgroundMode) {
+  constructor(
+    private backgroundCtrl:BackgroundMode,
+    private platform:Platform
+    ) {
     console.log('Hello BackgroundProvider Provider');
+    this.processInBGD = 0;
   }
 
   backgroundActive():boolean{
@@ -19,10 +25,16 @@ export class BackgroundProvider {
   }
 
   activateBackgroundMode(){
-    this.backgroundCtrl.enable();
+    if(!(this.processInBGD))
+      if(this.platform.is('cordova'))
+      this.backgroundCtrl.enable();
+    this.processInBGD+=1;
   }
   deactivateBackgroundMode(){
-    this.backgroundCtrl.disable();
+    this.processInBGD-=1;
+    if(!(this.processInBGD))
+      if(this.platform.is('cordova'))
+      this.backgroundCtrl.disable();
   }
 
   overrideBackButton(){

@@ -37,18 +37,17 @@ export class LabelSettingsPage {
   }
 
   loadLabels(){
-    this.showEmpty = false;
+    this.allLabels = []; //placeholder
     this.platform.ready().then(()=>{
       this.loadingScreen.showGeneralLoadingScreen();
       this.fileSaver.getLabels().then(result => {
         if(!result){
           this.allLabels = null;
-          this.showEmpty = true;
         }
         else{
             this.allLabels = result;
         }
-        this.loadingScreen.dismissGeneralLoadingScreen();
+        this.loadingScreen.dismissLoading();
     });
   });
 }
@@ -94,7 +93,7 @@ export class LabelSettingsPage {
                 if(this.allLabels==null)
                   this.allLabels=[];
                 this.allLabels.push(newLabel);
-                this.loadingScreen.dismissGeneralLoadingScreen();
+                this.loadingScreen.dismissLoading();
               });
             });
           }
@@ -139,7 +138,7 @@ export class LabelSettingsPage {
               this.fileSaver.editLabel(oldLabel,newLabel).then(()=>{
                 oldLabel.labelUrl = newLabel.labelUrl;
                 oldLabel.labelName = newLabel.labelName;
-                this.loadingScreen.dismissGeneralLoadingScreen();
+                this.loadingScreen.dismissLoading();
               });
             });
           }
@@ -172,7 +171,7 @@ export class LabelSettingsPage {
                   this.allLabels = null;
                   this.showEmpty = true;
                 }
-                this.loadingScreen.dismissGeneralLoadingScreen();
+                this.loadingScreen.dismissLoading();
               });
             });
           }

@@ -42,7 +42,7 @@ export class ImageListPage {
           let idx = this.imageList.indexOf(item);
           this.imageList.splice(idx,1);
           console.log(idx);
-          this.loadingProvider.dismissGeneralLoadingScreen();
+          this.loadingProvider.dismissLoading();
           if(!Boolean(Object.keys(this.imageList)[0])){
             this.navCtrl.pop();
           }

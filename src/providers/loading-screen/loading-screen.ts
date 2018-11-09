@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Loading, LoadingController} from "ionic-angular";
+import {Loading, LoadingController, LoadingOptions} from "ionic-angular";
 
 /*
   Generated class for the LoadingScreenProvider provider.
@@ -30,9 +30,21 @@ export class LoadingScreenProvider {
     });
     this.generalLoading.present();
   }
-  dismissGeneralLoadingScreen(){
-    if(this.generalLoading)
+  dismissLoading(){
+    if(this.generalLoading) {
       this.generalLoading.dismiss();
+      this.generalLoading = null;
+    }
   }
+
+  showGeneralUplaodingScreen(extr=""){
+    let uploadingScreenOpt:LoadingOptions = {
+      spinner:"dots",
+      content:"uploading...."+extr
+    };
+    this.generalLoading = this.loadingCtrl.create(uploadingScreenOpt);
+    this.generalLoading.present();
+  }
+
 
 }

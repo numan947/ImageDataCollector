@@ -150,7 +150,7 @@ export class ContactPage {
   * Dismisses the loading screen.
   * */
   dismissLoading() {
-    this.loadingProvider.dismissGeneralLoadingScreen();
+    this.loadingProvider.dismissLoading();
   }
   /**
   * Creates and presents basic loading screen.

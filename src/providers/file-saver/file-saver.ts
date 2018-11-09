@@ -136,7 +136,8 @@ export class FileSaverProvider {
     return this.storage.get(SAVED_LABELS).then(results=>{
       if(results){
         let idx = results.indexOf(prevLabel);
-        results[idx] = newLabel;
+        results[idx].labelName = newLabel.labelName;
+        results[idx].labelUrl = newLabel.labelUrl;
         return this.storage.set(SAVED_LABELS,results);
       }
     });

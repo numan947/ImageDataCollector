@@ -100,7 +100,7 @@ export class HomePage {
           console.log(this.allLabels);
         }
         this.fileSaver.labelsChanged = false;
-        this.loadingScreen.dismissGeneralLoadingScreen();
+        this.loadingScreen.dismissLoading();
 
         if(!this.allLabels){
           let alertForUpdatingSettings:any={
@@ -159,11 +159,11 @@ export class HomePage {
     }
     else {
       let result = [
-        new ImageModel("mock1", "assets/mock-images/mock_image.jpg", "Label1", "UploadUrl1"),
-        new ImageModel("mock2", "assets/imgs/logo.png", "Label2", "UploadUrl2"),
-        new ImageModel("mock3", "assets/imgs/test.jpg", "Label3", "UploadUrl3"),
-        new ImageModel("mock4", "assets/imgs/numan.jpg", "Label4", "UploadUrl4"),
-        new ImageModel("mock5", "assets/imgs/shahad.jpg", "Label5", "UploadUrl5")];
+        new ImageModel("mock1", "assets/mock-images/mock_image.jpg", "Label1", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
+        new ImageModel("mock2", "assets/imgs/logo.png", "Label2", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
+        new ImageModel("mock3", "assets/imgs/test.jpg", "Label3", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
+        new ImageModel("mock4", "assets/imgs/numan.jpg", "Label4", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
+        new ImageModel("mock5", "assets/imgs/shahad.jpg", "Label5", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post")];
       this.loadingScreen.showPageChangeLoadingScreen();
       this.navCtrl.push(ImageListPage, {data: result});
       console.log("Will Show Saved Images");
@@ -236,17 +236,28 @@ export class HomePage {
   }
 
   uploadImage() {
+
+    let temp:ImageModel = new ImageModel(new Date()+".png",this.capturedImage,this.selectedLabel.labelName,"http://ptsv2.com/t/9lnnt-1541759587/t/9lnnt-1541759587/post");
+    this.uploader.uploadSingleImage(temp);
     if (!(this.selectedLabel)) {
       this.alertProvider.showInformationAlert("You Must Select A Label");
       return;
     }
-    else if (this.platform.is("cordova")) {
+    else if (this.platform.is("cor")) {
       if (this.networkProvider.isConnected()) {
-        let temp:ImageModel = new ImageModel(new Date().toDateString()+".png",this.capturedImage,this.selectedLabel.labelName,this.selectedLabel.labelUrl);
-        this.toastProvider.presentInofrmationToast("Will Upload to storage");
+        let temp:ImageModel = new ImageModel(new Date()+".png",this.capturedImage,this.selectedLabel.labelName,"http://ptsv2.com/t/9lnnt-1541759587/t/9lnnt-1541759587/post");
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
-        this.uploader.uploadSingleImage(temp);
+        this.loadingScreen.showGeneralUplaodingScreen();
+        this.uploader.uploadSingleImage(temp).then(()=>{
+          this.loadingScreen.dismissLoading();
+          this.toastProvider.presentInofrmationToast("Successfully Uploaded");
+        }).catch(()=>{
+          this.loadingScreen.dismissLoading();
+          this.toastProvider.presentInofrmationToast("Upload Failed! Saving Locally....");
+          this.fileSaver.saveLocalImage(this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
+        });
+
       } else {
         this.alertProvider.showInformationAlert("Cannot Upload To Storage! Saving Locally!");
         this.platform.ready().then(() => {

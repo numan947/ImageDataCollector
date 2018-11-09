@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {FileTransfer, FileTransferObject, FileUploadOptions} from "@ionic-native/file-transfer";
 import {ImageModel} from "../../app/models/ImageModel";
+import {BackgroundProvider} from "../background/background";
 
 /*
   Generated class for the UploaderProvider provider.
@@ -10,7 +11,6 @@ import {ImageModel} from "../../app/models/ImageModel";
 */
 @Injectable()
 export class UploaderProvider {
-  url = "http://ptsv2.com/t/9lnnt-1541759587/post";
 
   private fileTransferObject:FileTransferObject = null;
   constructor(
@@ -20,8 +20,8 @@ export class UploaderProvider {
     this.fileTransferObject = this.fileTransfer.create();
   }
 
+  async uploadSingleImage(image:ImageModel){
 
-  uploadSingleImage(image:ImageModel){
     if(this.fileTransferObject===null)
       this.fileTransferObject = this.fileTransfer.create();
 
@@ -31,7 +31,7 @@ export class UploaderProvider {
       mimeType: "multipart/form-data",
       params : {'fileName': image.imageName,'label':image.imageLabel}
     };
-    return this.fileTransferObject.upload(image.imagePath,this.url,options);
+    return await this.fileTransferObject.upload(image.imagePath,image.uploadUrl,options);
   }
 
 }
