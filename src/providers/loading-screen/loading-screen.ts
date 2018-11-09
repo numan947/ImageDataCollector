@@ -24,9 +24,9 @@ export class LoadingScreenProvider {
     this.pageChangeLoading.present();
   }
 
-  showGeneralLoadingScreen(){
+  showGeneralLoadingScreen(extr = ""){
     this.generalLoading = this.loadingCtrl.create({
-      content:'please wait...'
+      content:'please wait...'+extr
     });
     this.generalLoading.present();
   }

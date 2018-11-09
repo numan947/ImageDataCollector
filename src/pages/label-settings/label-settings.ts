@@ -21,6 +21,8 @@ export class LabelSettingsPage {
 
 
   allLabels:Array<LabelModel> = null;
+  showEmpty:boolean = true;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -35,11 +37,13 @@ export class LabelSettingsPage {
   }
 
   loadLabels(){
+    this.showEmpty = false;
     this.platform.ready().then(()=>{
       this.loadingScreen.showGeneralLoadingScreen();
       this.fileSaver.getLabels().then(result => {
         if(!result){
           this.allLabels = null;
+          this.showEmpty = true;
         }
         else{
             this.allLabels = result;
@@ -164,8 +168,10 @@ export class LabelSettingsPage {
               this.fileSaver.deleteLabel(oldLabel).then(()=>{
                 let idx = this.allLabels.indexOf(oldLabel);
                 this.allLabels.splice(idx,1);
-                if(this.allLabels.length == 0)
-                  this.allLabels=null;
+                if(this.allLabels.length == 0) {
+                  this.allLabels = null;
+                  this.showEmpty = true;
+                }
                 this.loadingScreen.dismissGeneralLoadingScreen();
               });
             });

@@ -11,6 +11,8 @@ import {ImageListPage} from "../image-list/image-list";
 import {LabelSettingsPage} from "../label-settings/label-settings";
 import {LabelModel} from "../../app/models/LabelModel";
 import {Diagnostic} from "@ionic-native/diagnostic";
+import {UploaderProvider} from "../../providers/uploader/uploader";
+import {ImageModel} from "../../app/models/ImageModel";
 
 //Input Field States
 /**
@@ -36,7 +38,7 @@ export class HomePage {
   /**
    * @ignore
    * */
-  rafidProject: boolean = true;
+  rafidProject: boolean = false;
 
   selectedLabel: LabelModel = null; //By default none is selected
 
@@ -75,7 +77,8 @@ export class HomePage {
     private alertProvider: AlertProvider,
     private backgroundProvider: BackgroundProvider,
     private loadingScreen: LoadingScreenProvider,
-    private diagnostic:Diagnostic
+    private diagnostic:Diagnostic,
+    private uploader:UploaderProvider
   ) {
     this.permissionsNeeded = [];
     this.permissionsNeeded.push(this.diagnostic.permission.CAMERA);
@@ -139,7 +142,7 @@ export class HomePage {
   showSavedImages() {
     console.log("Inside showSavedImages");
 
-    // if (this.platform.is('cordova')) {
+    if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
         this.fileSaver.getLocalImages().then(result => {
           // console.log(Boolean(Object.keys(result)[0]));
@@ -153,7 +156,7 @@ export class HomePage {
           this.alertProvider.showInformationAlert("No Saved Images");
         })
       });
-/*    }
+    }
     else {
       let result = [
         new ImageModel("mock1", "assets/mock-images/mock_image.jpg", "Label1", "UploadUrl1"),
@@ -164,7 +167,7 @@ export class HomePage {
       this.loadingScreen.showPageChangeLoadingScreen();
       this.navCtrl.push(ImageListPage, {data: result});
       console.log("Will Show Saved Images");
-    }*/
+    }
   }
 
 
@@ -239,9 +242,11 @@ export class HomePage {
     }
     else if (this.platform.is("cordova")) {
       if (this.networkProvider.isConnected()) {
+        let temp:ImageModel = new ImageModel(new Date().toDateString()+".png",this.capturedImage,this.selectedLabel.labelName,this.selectedLabel.labelUrl);
         this.toastProvider.presentInofrmationToast("Will Upload to storage");
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
+        this.uploader.uploadSingleImage(temp);
       } else {
         this.alertProvider.showInformationAlert("Cannot Upload To Storage! Saving Locally!");
         this.platform.ready().then(() => {

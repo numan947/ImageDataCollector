@@ -104,18 +104,27 @@ export class ContactPage {
         this.dismissLoading();
       })
     } else {
-      //TODO: ADD CUSTOM ALERT MAKING CODE HERE
-      // this.alertCtrl.create({
-      //   title: "We Need You!",
-      //   subTitle: "Your name will be set as Anonymous, if no information is given."
-      // }).addButton({
-      //   text: "Ok"
-      // }).addButton({
-      //   text: "Set Anonymous",
-      //   handler: data => {
-      //     this.userDetails.userName = "Anonymous";
-      //   }
-      // }).present();
+      // TODO: ADD CUSTOM ALERT MAKING CODE HERE
+      let alertSettings:any = {
+        title: "We Need You!",
+        subTitle: "Your name will be set as Anonymous, if no information is given.",
+        buttons:[
+          {
+            text:"Ok",
+            handler:data=>{
+
+            }
+          },
+          {
+            text: "Set Anonymous",
+            handler: data => {
+              this.userDetails.userName = "Anonymous";
+            }
+          }
+
+        ]
+      };
+      this.alertProvider.showTextBoxAlert(alertSettings);
     }
   }
 

@@ -25,11 +25,11 @@
     </ion-list>
   </div>
 
-  <div *ngIf="!allLabels">
+  <div *ngIf="!allLabels && showEmpty">
     <ion-slides>
       <ion-slide>
         <img src="assets/imgs/add_label.png">
-        <h2>What The Hell Are You Labeling?!</h2>
+        <h2>What Are You Labeling?!</h2>
         <h2>Add Labels First!</h2>
       </ion-slide>
     </ion-slides>

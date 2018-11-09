@@ -5,22 +5,19 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import {BackgroundProvider} from "../providers/background/background";
-import {ToastProvider} from "../providers/toast/toast";
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   rootPage:any = TabsPage;
-  public netWorkStatus:boolean = false;
   lastBack = 0;
   allowClose=false;
   constructor( public platform: Platform,
               public statusBar: StatusBar,
               public splashScreen: SplashScreen,
               public app:App,
-              public toastProvider:ToastProvider,
-              public backgorundProvider:BackgroundProvider,
+               public backgorundProvider:BackgroundProvider,
               public toastCtrl:ToastController
               ) {
     platform.ready().then(() => {
@@ -59,7 +56,6 @@ export class MyApp {
           } else if(Date.now() - this.lastBack < closeDelay && this.allowClose) {
 
             if(this.backgorundProvider.backgroundActive()){
-              // this.toastProvider.presentInofrmationToast("Moving To Background");
               this.backgorundProvider.moveToBackground();
             }
             else
