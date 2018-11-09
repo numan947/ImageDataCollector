@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {File} from "@ionic-native/file";
-import {DateTime, Platform} from "ionic-angular";
+import {Platform} from "ionic-angular";
 import {ToastProvider} from "../toast/toast";
 import {BackgroundProvider} from "../background/background";
 import {Storage} from "@ionic/storage";

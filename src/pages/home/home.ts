@@ -10,7 +10,7 @@ import {LoadingScreenProvider} from "../../providers/loading-screen/loading-scre
 import {ImageListPage} from "../image-list/image-list";
 import {LabelSettingsPage} from "../label-settings/label-settings";
 import {LabelModel} from "../../app/models/LabelModel";
-import {Diagnostic} from "@ionic-native/diagnostic";
+
 //Input Field States
 /**
  * This Variable contains the css needed to make the Input fields in Personal Info Page disabled.
@@ -71,8 +71,7 @@ export class HomePage {
     private toastProvider: ToastProvider,
     private alertProvider: AlertProvider,
     private backgroundProvider: BackgroundProvider,
-    private loadingScreen: LoadingScreenProvider,
-    private diagnostic:Diagnostic
+    private loadingScreen: LoadingScreenProvider
   ) {
   }
 
@@ -168,17 +167,24 @@ export class HomePage {
 
   importFromSource() {
     console.log("Inside importFromSource");
-    if(this.backgroundProvider.backgroundActive())
-      this.backgroundProvider.deactivateBackgroundMode();
-    else
-      this.backgroundProvider.activateBackgroundMode();
+    this.diagnostic.getPermissionAuthorizationStatus(this.diagnostic.permission.CAMERA).then((status) => {
+      console.log(`AuthorizationStatus`);
+      console.log(status);
+      if (status != this.diagnostic.permissionStatus.GRANTED) {
+        this.diagnostic.requestRuntimePermission(this.diagnostic.permission.CAMERA).then((data) => {
+          console.log(`getCameraAuthorizationStatus`);
+          console.log(data);
+        })
+      } else {
+        console.log("We have the permission");
+      }
+    }, (statusError) => {
+      console.log(`statusError`);
+      console.log(statusError);
+    });
   }
 
 
-
-  private getImageFromCamera(){
-
-  }
 
   captureImage() {
     console.log("Inside Capture Image");
