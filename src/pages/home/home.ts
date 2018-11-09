@@ -10,6 +10,7 @@ import {LoadingScreenProvider} from "../../providers/loading-screen/loading-scre
 import {ImageListPage} from "../image-list/image-list";
 import {LabelSettingsPage} from "../label-settings/label-settings";
 import {LabelModel} from "../../app/models/LabelModel";
+import {Diagnostic} from "@ionic-native/diagnostic";
 
 //Input Field States
 /**
@@ -35,7 +36,7 @@ export class HomePage {
   /**
    * @ignore
    * */
-  rafidProject: boolean = false;
+  rafidProject: boolean = true;
 
   selectedLabel: LabelModel = null; //By default none is selected
 
@@ -46,6 +47,8 @@ export class HomePage {
   uploadButtonDisabled: boolean = true;
 
   private allLabels: Array<LabelModel> = null;
+
+  private permissionsNeeded:any = null;
 
 
   CAMERAOPTIONS: CameraOptions = {
@@ -71,8 +74,13 @@ export class HomePage {
     private toastProvider: ToastProvider,
     private alertProvider: AlertProvider,
     private backgroundProvider: BackgroundProvider,
-    private loadingScreen: LoadingScreenProvider
+    private loadingScreen: LoadingScreenProvider,
+    private diagnostic:Diagnostic
   ) {
+    this.permissionsNeeded = [];
+    this.permissionsNeeded.push(this.diagnostic.permission.CAMERA);
+    this.permissionsNeeded.push(this.diagnostic.permission.READ_EXTERNAL_STORAGE);
+    this.permissionsNeeded.push(this.diagnostic.permission.WRITE_EXTERNAL_STORAGE);
   }
 
   loadLabels() {
@@ -167,20 +175,30 @@ export class HomePage {
 
   importFromSource() {
     console.log("Inside importFromSource");
-    this.diagnostic.getPermissionAuthorizationStatus(this.diagnostic.permission.CAMERA).then((status) => {
-      console.log(`AuthorizationStatus`);
-      console.log(status);
-      if (status != this.diagnostic.permissionStatus.GRANTED) {
-        this.diagnostic.requestRuntimePermission(this.diagnostic.permission.CAMERA).then((data) => {
-          console.log(`getCameraAuthorizationStatus`);
-          console.log(data);
-        })
-      } else {
-        console.log("We have the permission");
+  }
+
+
+
+  private getPictureFromCamera(){
+    this.camera.getPicture(this.CAMERAOPTIONS).then(imagePath => {
+      this.capturedImage = imagePath;
+      this.storeButtonDisabled = false;
+      this.uploadButtonDisabled = false;
+      this.setImageCaptureMode();
+    }).catch(err => {
+      console.log("WEIRD ERROR HAPPENED");
+      if (!(err == "No Image Selected")) {
+        this.alertProvider.showInformationAlert(err);
       }
-    }, (statusError) => {
-      console.log(`statusError`);
-      console.log(statusError);
+    });
+  }
+
+
+  getPermissions(permToRequest){
+    this.diagnostic.requestRuntimePermissions(permToRequest).then(()=>{
+      this.captureImage();
+    }).catch((error)=>{
+      this.alertProvider.showInformationAlert("Error While Requesting Permissions "+error);
     });
   }
 
@@ -188,36 +206,24 @@ export class HomePage {
 
   captureImage() {
     console.log("Inside Capture Image");
-    if (this.platform.is('cordova')) {
 
-      this.camera.getPicture(this.CAMERAOPTIONS).then(imagePath => {
-        this.capturedImage = imagePath;
-        this.storeButtonDisabled = false;
-        this.uploadButtonDisabled = false;
-        this.setImageCaptureMode();
-      }).catch(err => {
-        console.log("WEIRD ERROR HAPPENED");
-        if (!(err == "No Image Selected")) {
-          this.alertProvider.showInformationAlert(err);
+    if (this.platform.is('cordova')) {
+      this.diagnostic.getPermissionsAuthorizationStatus(this.permissionsNeeded).then((statuses)=>{
+        let permToRequest:any =[];
+        for(let perm in statuses){
+          if(statuses[perm]!=this.diagnostic.permissionStatus.GRANTED){
+            permToRequest.push(perm);
+          }
         }
+
+        if(permToRequest.length>0){
+          this.getPermissions(permToRequest);
+        }else{
+          this.getPictureFromCamera();
+        }
+      }).catch((error)=>{
+        this.alertProvider.showInformationAlert("Error While Permission Check "+error);
       });
-      // console.log("ABOUT TO ASK PERMISSION");
-      // this.diagnostic.getPermissionAuthorizationStatus(this.diagnostic.permission.CAMERA).then((status) => {
-      //   console.log(`AuthorizationStatus`);
-      //   console.log(status);
-      //   if (status != this.diagnostic.permissionStatus.GRANTED) {
-      //     this.diagnostic.requestRuntimePermission(this.diagnostic.permission.CAMERA).then((data) => {
-      //       console.log(`getCameraAuthorizationStatus`);
-      //       console.log(data);
-      //     })
-      //   } else {
-      //     console.log("We have the permission");
-      //     this.getImageFromCamera();
-      //   }
-      // }, (statusError) => {
-      //   console.log(`statusError`);
-      //   console.log(statusError);
-      // });
     } else {
       this.storeButtonDisabled = false;
       this.uploadButtonDisabled = false;
