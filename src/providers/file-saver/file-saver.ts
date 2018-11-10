@@ -97,6 +97,17 @@ export class FileSaverProvider {
     });
   }
 
+  public getNextImageFile(){
+    return this.storage.get(SAVED_FILES).then(result=>{
+      if(result)
+        return result[0];
+      else
+        return null;
+    }).catch(err=>{
+      console.log("Error while fetching file from storage");
+    })
+  }
+
 
 
 

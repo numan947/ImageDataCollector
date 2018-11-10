@@ -8,10 +8,15 @@
 
   <ion-navbar>
     <ion-title>Saved Images</ion-title>
-    <ion-buttons end *ngIf = "uploader.batchUploaderReady">
-      <button tooltip="Upload All Images" positionV="bottom" duration="300" ion-button icon-only (click)="uploadAll()">
+    <ion-buttons end *ngIf="imageList" >
+      <button *ngIf = "!uploader.batchUploadService" tooltip="Upload All Images" positionV="bottom" duration="300" ion-button icon-only (click)="startUploadService()">
         <ion-icon name="custom-cloud-upload"></ion-icon>
       </button>
+
+      <button *ngIf = "uploader.batchUploadService" tooltip="Upload All Images" positionV="bottom" duration="300" ion-button icon-only (click)="stopUploadService()">
+        <ion-icon name="custom-stop"></ion-icon>
+      </button>
+
     </ion-buttons>
   </ion-navbar>
 

@@ -26,11 +26,15 @@ export class ImageListPage {
     private fileSaver:FileSaverProvider,
     private platform:Platform,
     private loadingProvider:LoadingScreenProvider,
-    private alertProvider:AlertProvider,
-    public uploader:UploaderProvider
+    public uploader:UploaderProvider,
+    private alertCtrl:AlertProvider
   ) {
     this.imageList = this.navParams.get('data');
     console.log(this.imageList)
+  }
+
+  updateImageListOfUploader(){
+    this.uploader.setImageList(this.imageList);
   }
 
   ionViewDidLoad() {
@@ -51,17 +55,36 @@ export class ImageListPage {
       });
   }
 
-  uploadAll(){
-    this.uploader.batchUploaderReady = false;
-    this.uploader.uploadAll(this.imageList);
+  startUploadService(){
+    this.updateImageListOfUploader();
+    this.uploader.batchUploadService = true;
+    this.uploader.uploadAll();
+  }
+
+  stopUploadService(){
+    this.uploader.batchUploadService=false;
+    this.loadingProvider.showGeneralLoadingScreen();
+    if (this.platform.is('cordova')) {
+      this.platform.ready().then(() => {
+        this.fileSaver.getLocalImages().then(result => {
+          this.updateImageListOfUploader();
+          this.imageList = result;
+          this.loadingProvider.dismissLoading();
+        }).catch(()=>{
+          console.log("ERROR WHILE REFRESHING....");
+          this.loadingProvider.dismissLoading();
+        })
+      });
+    }
   }
 
   doRefresh(refresher){
     if (this.platform.is('cordova')) {
       this.platform.ready().then(() => {
         this.fileSaver.getLocalImages().then(result => {
+            this.updateImageListOfUploader();
             this.imageList = result;
-          refresher.complete();
+            refresher.complete();
         }).catch(()=>{
           console.log("ERROR WHILE REFRESHING....");
           refresher.complete();

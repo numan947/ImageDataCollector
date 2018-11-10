@@ -8,9 +8,14 @@ const PERSONALINFO = "personal_information";
 
 @Injectable()
 export class PersonalInfoProvider {
-
+  public personalInfo:UserProfile = null;
   constructor(private storage:Storage) {
     console.log('Hello PersonalInfoProvider Provider');
+    this.storage.get(PERSONALINFO).then((result)=>{
+      this.personalInfo = JSON.parse(result);
+    }).catch(()=>{
+      console.log("This Should Also Not Happen...");
+    });
   }
 
   getUserInfo(){

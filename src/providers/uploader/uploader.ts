@@ -5,6 +5,9 @@ import {BackgroundProvider} from "../background/background";
 import {HttpClient} from "@angular/common/http";
 import {Platform} from "ionic-angular";
 import {FileSaverProvider} from "../file-saver/file-saver";
+import {P} from "@angular/core/src/render3";
+import {PersonalInfoProvider} from "../personal-info/personal-info";
+import {UserProfile} from "../../app/models/UserProfile";
 
 /*
   Generated class for the UploaderProvider provider.
@@ -15,34 +18,41 @@ import {FileSaverProvider} from "../file-saver/file-saver";
 @Injectable()
 export class UploaderProvider {
 
-  private allImages = null;
-  public batchUploaderReady = false;
+  private imageList:Array<ImageModel>;
+
+  public batchUploadService:boolean =false;
+
   constructor(
     private fileTransfer:FileTransfer,
     private platform:Platform,
     private background:BackgroundProvider,
-    private filesaver:FileSaverProvider
+    private filesaver:FileSaverProvider,
+    private personalInfo:PersonalInfoProvider
   ) {
     console.log('Hello UploaderProvider Provider');
-    this.batchUploaderReady = true;
+    this.batchUploadService = false;
+    this.imageList = null;
+  }
+
+  setImageList(imageList:Array<ImageModel>){
+    this.imageList =imageList;
   }
 
 
-  uploadAll(images:Array<ImageModel>){
-    this.background.activateBackgroundMode();
-    this.allImages= images;
-    console.log(this.allImages);
+  uploadAll(){
     this.nextOne();
-    this.background.deactivateBackgroundMode();
-    this.batchUploaderReady = true;
   }
   public uploadSingleImageNow(image:ImageModel){
     // console.log("INSIDE UPLOAD SINGLE");
+    let profile:UserProfile = this.personalInfo.personalInfo;
+    if(profile===null)
+      profile = new UserProfile("Anonymous","","","");
     let options:FileUploadOptions = {
       fileKey: "file",
       fileName: image.imageName,
       mimeType: "multipart/form-data",
-      params : {'fileName': image.imageName,'label':image.imageLabel}
+      params : {'fileName': image.imageName,'label':image.imageLabel},
+      headers:{"username":profile.userName,"useremail":profile.email,"userphone":profile.phone,"userorganization":profile.organization}
     };
     // console.log("Uploading to...", image.uploadUrl);
     return this.platform.ready().then(()=>{
@@ -54,12 +64,15 @@ export class UploaderProvider {
 
   private uploadSingleImage(image:ImageModel){
     // console.log("INSIDE UPLOAD SINGLE");
-
+    let profile:UserProfile = this.personalInfo.personalInfo;
+    if(profile===null)
+      profile = new UserProfile("Anonymous","","","");
     let options:FileUploadOptions = {
       fileKey: "file",
       fileName: image.imageName,
       mimeType: "multipart/form-data",
-      params : {'fileName': image.imageName,'label':image.imageLabel}
+      params : {'fileName': image.imageName,'label':image.imageLabel},
+      headers:{"username":profile.userName,"useremail":profile.email,"userphone":profile.phone,"userorganization":profile.organization}
     };
     // console.log("Uploading to...", image.uploadUrl);
     this.platform.ready().then(()=>{
@@ -67,6 +80,12 @@ export class UploaderProvider {
       fileTransferObject.upload(image.imagePath,image.uploadUrl,options).then((data)=>{
         this.filesaver.deleteLocalImage(image).then(()=>{
           this.nextOne();
+          if(this.imageList){
+            if(this.imageList.length){
+              let idx = this.imageList.findIndex(elem=> elem.imageName===image.imageName);
+              this.imageList.splice(idx,1);
+            }
+          }
         }).catch(()=>{
           console.log(" batch: error while deleting local image in uploader");
         });
@@ -77,21 +96,23 @@ export class UploaderProvider {
   }
 
   private nextOne(){
-    console.log("INSIDE NEXT ONE");
-    if(!this.allImages)
+    if(!this.batchUploadService)
       return;
-    else if(this.allImages.length == 0) {
-      this.allImages = null;
-      return;
-    }
-    let tmpImageModel:ImageModel = this.allImages[0];
-    this.allImages.splice(0,1);
-    try{
-      this.uploadSingleImage(tmpImageModel);
-    }catch (e) {
-      console.log(e);
-    }
-
+    this.filesaver.getNextImageFile().then(result=>{
+      console.log(result);
+      if(!result){
+        if(!this.platform.is('cordova')){
+          setTimeout(()=>{
+            this.batchUploadService = false;
+          },2000);
+        }
+        else this.batchUploadService = false;
+      }
+      else
+        this.uploadSingleImage(result);
+    }).catch(err=>{
+      console.log("THis error shouldn't exist")
+    });
   }
 
 }
