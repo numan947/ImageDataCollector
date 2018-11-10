@@ -106,6 +106,8 @@ export class LabelSettingsPage {
   editLabel(oldLabel:LabelModel){
     console.log("TODO: Edit Label");
     let newLabel:LabelModel = null;
+    let newLabelName:string = oldLabel.labelName
+    let newLabelUrl:string = oldLabel.labelUrl;
     let editLabelAlert:any= {
       title:"Edit Label",
       message:"You Must Provide LabelName and a Url",
@@ -113,12 +115,12 @@ export class LabelSettingsPage {
         {
           name:"labelName",
           placeholder:"Label Name",
-          value:oldLabel.labelName
+          value:newLabelName
         },
         {
           name:"labelUrl",
           placeholder:"Label Url",
-          value:oldLabel.labelUrl,
+          value:newLabelUrl,
           type:"url"
         }
       ],
@@ -131,8 +133,8 @@ export class LabelSettingsPage {
         {
           text:"Save",
           handler:data=>{
+            console.log(data)
             newLabel = new LabelModel(data.labelName,data.labelUrl);
-            console.log(newLabel);
             this.loadingScreen.showGeneralLoadingScreen();
             this.platform.ready().then(()=>{
               this.fileSaver.editLabel(oldLabel,newLabel).then(()=>{

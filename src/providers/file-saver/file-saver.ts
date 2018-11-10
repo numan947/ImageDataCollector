@@ -122,7 +122,8 @@ export class FileSaverProvider {
     this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(results=>{
       if(results){
-        let idx = results.indexOf(label);
+        let idx = results.findIndex(elem=> elem.labelName===label.labelName);
+        console.log(idx);
         results.splice(idx,1);
         if(results.length>0)
           return this.storage.set(SAVED_LABELS,results);
@@ -135,7 +136,14 @@ export class FileSaverProvider {
     this.labelsChanged = true;
     return this.storage.get(SAVED_LABELS).then(results=>{
       if(results){
-        let idx = results.indexOf(prevLabel);
+        // console.log("PrevLabel");
+        // console.log(prevLabel);
+        // console.log("NewLabel");
+        // console.log(newLabel);
+        //
+        let idx = results.findIndex(elem=> elem.labelName===prevLabel.labelName);
+        console.log(idx);
+
         results[idx].labelName = newLabel.labelName;
         results[idx].labelUrl = newLabel.labelUrl;
         return this.storage.set(SAVED_LABELS,results);

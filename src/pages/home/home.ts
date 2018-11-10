@@ -159,11 +159,11 @@ export class HomePage {
     }
     else {
       let result = [
-        new ImageModel("mock1", "assets/mock-images/mock_image.jpg", "Label1", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
-        new ImageModel("mock2", "assets/imgs/logo.png", "Label2", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
-        new ImageModel("mock3", "assets/imgs/test.jpg", "Label3", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
-        new ImageModel("mock4", "assets/imgs/numan.jpg", "Label4", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post"),
-        new ImageModel("mock5", "assets/imgs/shahad.jpg", "Label5", "http://ptsv2.com/t/9lnnt-1541759587 /t/9lnnt-1541759587/post")];
+        new ImageModel("mock1", "assets/mock-images/mock_image.jpg", "Label1", "http://ptsv2.com/t/tvvs0-1541831199/post"),
+        new ImageModel("mock2", "assets/imgs/logo.png", "Label2", "http://ptsv2.com/t/tvvs0-1541831199/post"),
+        new ImageModel("mock3", "assets/imgs/test.jpg", "Label3", "http://ptsv2.com/t/tvvs0-1541831199/post"),
+        new ImageModel("mock4", "assets/imgs/numan.jpg", "Label4", "http://ptsv2.com/t/tvvs0-1541831199/post"),
+        new ImageModel("mock5", "assets/imgs/shahad.jpg", "Label5", "http://ptsv2.com/t/tvvs0-1541831199/post")];
       this.loadingScreen.showPageChangeLoadingScreen();
       this.navCtrl.push(ImageListPage, {data: result});
       console.log("Will Show Saved Images");
@@ -236,20 +236,17 @@ export class HomePage {
   }
 
   uploadImage() {
-
-    let temp:ImageModel = new ImageModel(new Date()+".png",this.capturedImage,this.selectedLabel.labelName,"http://ptsv2.com/t/9lnnt-1541759587/t/9lnnt-1541759587/post");
-    this.uploader.uploadSingleImage(temp);
     if (!(this.selectedLabel)) {
       this.alertProvider.showInformationAlert("You Must Select A Label");
       return;
     }
-    else if (this.platform.is("cor")) {
+    else if (this.platform.is("cordova")) {
       if (this.networkProvider.isConnected()) {
-        let temp:ImageModel = new ImageModel(new Date()+".png",this.capturedImage,this.selectedLabel.labelName,"http://ptsv2.com/t/9lnnt-1541759587/t/9lnnt-1541759587/post");
+        let temp:ImageModel = new ImageModel(new Date()+".png",this.capturedImage,this.selectedLabel.labelName,this.selectedLabel.labelUrl);
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
         this.loadingScreen.showGeneralUplaodingScreen();
-        this.uploader.uploadSingleImage(temp).then(()=>{
+        this.uploader.uploadSingleImageNow(temp).then(()=>{
           this.loadingScreen.dismissLoading();
           this.toastProvider.presentInofrmationToast("Successfully Uploaded");
         }).catch(()=>{

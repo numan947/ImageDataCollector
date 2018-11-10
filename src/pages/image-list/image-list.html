@@ -8,7 +8,7 @@
 
   <ion-navbar>
     <ion-title>Saved Images</ion-title>
-    <ion-buttons end *ngIf = "imageList">
+    <ion-buttons end *ngIf = "uploader.batchUploaderReady">
       <button tooltip="Upload All Images" positionV="bottom" duration="300" ion-button icon-only (click)="uploadAll()">
         <ion-icon name="custom-cloud-upload"></ion-icon>
       </button>
@@ -19,8 +19,11 @@
 
 
 <ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let item of imageList; let idx = index">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="imageList">
+    <ion-item *ngFor="let item of imageList; let idx = index" >
       <ion-thumbnail item-start>
         <img src="{{item.imagePath}}">
       </ion-thumbnail>
@@ -29,5 +32,6 @@
       <button ion-button clear item-end color="danger" (click)="deleteItem(item)">Delete</button>
     </ion-item>
   </ion-list>
+  <img *ngIf="!imageList" src="assets/imgs/gone.png">
 
 </ion-content>

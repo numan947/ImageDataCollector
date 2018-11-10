@@ -4,6 +4,7 @@ import {FileSaverProvider} from "../../providers/file-saver/file-saver";
 import {LoadingScreenProvider} from "../../providers/loading-screen/loading-screen";
 import {ImageModel} from "../../app/models/ImageModel";
 import {AlertProvider} from "../../providers/alert/alert";
+import {UploaderProvider} from "../../providers/uploader/uploader";
 
 /**
  * Generated class for the ImageListPage page.
@@ -25,7 +26,8 @@ export class ImageListPage {
     private fileSaver:FileSaverProvider,
     private platform:Platform,
     private loadingProvider:LoadingScreenProvider,
-    private alertProvider:AlertProvider
+    private alertProvider:AlertProvider,
+    public uploader:UploaderProvider
   ) {
     this.imageList = this.navParams.get('data');
     console.log(this.imageList)
@@ -42,12 +44,31 @@ export class ImageListPage {
           let idx = this.imageList.indexOf(item);
           this.imageList.splice(idx,1);
           console.log(idx);
+          if(this.imageList.length==0)
+            this.imageList = null;
           this.loadingProvider.dismissLoading();
-          if(!Boolean(Object.keys(this.imageList)[0])){
-            this.navCtrl.pop();
-          }
         });
       });
   }
+
+  uploadAll(){
+    this.uploader.batchUploaderReady = false;
+    this.uploader.uploadAll(this.imageList);
+  }
+
+  doRefresh(refresher){
+    if (this.platform.is('cordova')) {
+      this.platform.ready().then(() => {
+        this.fileSaver.getLocalImages().then(result => {
+            this.imageList = result;
+          refresher.complete();
+        }).catch(()=>{
+          console.log("ERROR WHILE REFRESHING....");
+          refresher.complete();
+        })
+      });
+    }
+  }
+
 
 }
