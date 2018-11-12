@@ -106,7 +106,7 @@ export class HomePage {
         if(!this.allLabels){
           let alertForUpdatingSettings:any={
             title: "<h6>YOU MUST ADD LABELS FIRST</h6>",
-            message:"<img ion-text src='assets/imgs/doctor_strange.jpg'>",
+            message:"<img ion-text src='assets/imgs/doctor_strange.png'>",
             buttons:[
               {
                 text:"Teach Me!",
@@ -189,6 +189,7 @@ export class HomePage {
       this.storeButtonDisabled = false;
       this.uploadButtonDisabled = false;
       this.setImageCaptureMode();
+      this.toastProvider.presentInofrmationToast(this.capturedImage);
     }).catch(err => {
       console.log("WEIRD ERROR HAPPENED");
       if (!(err == "No Image Selected")) {

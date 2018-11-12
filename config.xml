@@ -101,5 +101,5 @@
     <plugin name="cordova-plugin-statusbar" spec="2.4.2" />
     <plugin name="cordova.plugins.diagnostic" spec="4.0.10" />
     <plugin name="cordova-custom-config" spec="^5.0.2" />
-    <engine name="android" spec="6.3.0" />
+    <engine name="android" spec="^6.3.0" />
 </widget>

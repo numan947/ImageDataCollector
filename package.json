@@ -35,7 +35,7 @@
     "@ionic-native/splash-screen": "~4.15.0",
     "@ionic-native/status-bar": "^4.15.0",
     "@ionic/storage": "^2.2.0",
-    "cordova-android": "6.3.0",
+    "cordova-android": "^6.3.0",
     "cordova-android-support-gradle-release": "^1.4.5",
     "cordova-custom-config": "^5.0.2",
     "cordova-plugin-background-mode": "0.7.2",
