@@ -75,7 +75,7 @@ export class FileSaverProvider {
   }
 
   private createFileName() {
-    var d = new Date(),n = d.getTime(),newFileName =  GENERIC_SAVE_FILE_NAME+n + ".png";
+    var d = new Date(),n = d.getTime(),newFileName =  GENERIC_SAVE_FILE_NAME+n + ".jpg";
     return newFileName;
   }
 

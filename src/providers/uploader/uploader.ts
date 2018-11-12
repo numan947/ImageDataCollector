@@ -50,6 +50,7 @@ export class UploaderProvider {
     let options:FileUploadOptions = {
       fileKey: "file",
       fileName: image.imageName,
+      chunkedMode:false,
       mimeType: "multipart/form-data",
       params : {'fileName': image.imageName,'label':image.imageLabel},
       headers:{"username":profile.userName,"useremail":profile.email,"userphone":profile.phone,"userorganization":profile.organization}
@@ -71,6 +72,7 @@ export class UploaderProvider {
       fileKey: "file",
       fileName: image.imageName,
       mimeType: "multipart/form-data",
+      chunkedMode:false,
       params : {'fileName': image.imageName,'label':image.imageLabel},
       headers:{"username":profile.userName,"useremail":profile.email,"userphone":profile.phone,"userorganization":profile.organization}
     };

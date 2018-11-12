@@ -56,11 +56,12 @@ export class HomePage {
   CAMERAOPTIONS: CameraOptions = {
     quality: 100,
     destinationType: this.camera.DestinationType.FILE_URI,
-    encodingType: this.camera.EncodingType.PNG,
+    encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     targetWidth: 720,
     targetHeight: 720,
     sourceType: this.camera.PictureSourceType.CAMERA,
+    correctOrientation:true
   };
 
 
@@ -105,7 +106,7 @@ export class HomePage {
         if(!this.allLabels){
           let alertForUpdatingSettings:any={
             title: "<h6>YOU MUST ADD LABELS FIRST</h6>",
-            message:"<img ion-text src='assets/imgs/doctor_strange.png'>",
+            message:"<img ion-text src='assets/imgs/doctor_strange.jpg'>",
             buttons:[
               {
                 text:"Teach Me!",
@@ -242,7 +243,7 @@ export class HomePage {
     }
     else if (this.platform.is("cordova")) {
       if (this.networkProvider.isConnected()) {
-        let temp:ImageModel = new ImageModel(new Date()+".png",this.capturedImage,this.selectedLabel.labelName,this.selectedLabel.labelUrl);
+        let temp:ImageModel = new ImageModel(new Date()+".jpg",this.capturedImage,this.selectedLabel.labelName,this.selectedLabel.labelUrl);
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
         this.loadingScreen.showGeneralUplaodingScreen();
