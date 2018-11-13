@@ -99,7 +99,7 @@ export class UploaderProvider {
         "userphone":profile.phone,
         "userorganization":profile.organization
       },
-      headers:{},
+      headers:{"appkey":"E78E2433C18FFA9E5CF85DF1DE1EC"},
     };
     let uploadPath:string = masterEndPoint;
     if(!uploadPath)
@@ -134,7 +134,7 @@ export class UploaderProvider {
         "userphone":profile.phone,
         "userorganization":profile.organization
       },
-      headers:{}
+      headers:{"appkey":"E78E2433C18FFA9E5CF85DF1DE1EC"}
     };
 
     let uploadPath:string = this.masterEndPoint;
