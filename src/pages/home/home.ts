@@ -247,24 +247,26 @@ export class HomePage {
       return;
     }
     else if (this.platform.is("cordova")) {
-      if (!(this.uploader.getUploadStatus())&&this.networkProvider.isConnected()) {
+      if (!(this.uploader.getUploadStatus()) && this.networkProvider.isConnected()) {
         let temp: ImageModel = new ImageModel("SIMPLE_IMAGE_COLLECTOR_APP_" + new Date() + ".jpg", this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
         this.loadingScreen.showGeneralUplaodingScreen();
-        this.uploader.uploadSingleImageNow(temp,this.masterEndPoint)
+        this.uploader.uploadSingleImageNow(temp, this.masterEndPoint)
           .then(() => {
-          this.loadingScreen.dismissLoading();
-          this.toastProvider.presentInofrmationToast("Successfully Uploaded");
-        })
+            this.uploader.setUploadStatus(false);
+            this.loadingScreen.dismissLoading();
+            this.toastProvider.presentInofrmationToast("Successfully Uploaded");
+          })
           .catch(() => {
-          this.loadingScreen.dismissLoading();
-          this.alertProvider.showInformationAlert("Upload Failed! Saving Locally....");
-          this.fileSaver.saveLocalImage(this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
-        });
+            this.uploader.setUploadStatus(false);
+            this.loadingScreen.dismissLoading();
+            this.alertProvider.showInformationAlert("Upload Failed! Saving Locally....");
+            this.fileSaver.saveLocalImage(this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
+          });
 
       } else {
-        if(this.uploader.getUploadStatus())
+        if (this.uploader.getUploadStatus())
           this.alertProvider.showInformationAlert("Upload is active! Queued!");
         else
           this.alertProvider.showInformationAlert("No Internet! Saving Locally!");
@@ -303,14 +305,14 @@ export class HomePage {
     this.GENERALMODE = true;
     this.IMAGECAPTUREDMODE = false;
     this.capturedImage = null;
-    this.selectedLabel=null;
+    this.selectedLabel = null;
   }
 
 
   setImageCaptureMode() {
     this.IMAGECAPTUREDMODE = true;
     this.GENERALMODE = false;
-    this.selectedLabel=null;
+    this.selectedLabel = null;
   }
 
 

@@ -51,6 +51,9 @@ export class UploaderProvider {
   getUploadStatus():boolean{
     return this.uploadActive;
   }
+  setUploadStatus(status:boolean = false){
+    this.uploadActive = status;
+  }
 
   abortAllUpload(){
     if(this.uploadActive) {
@@ -179,7 +182,10 @@ export class UploaderProvider {
             this.batchUploadService = false;
           },2000);
         }
-        else this.batchUploadService = false;
+        else{
+          this.batchUploadService = false;
+          this.uploadActive = false;
+        }
       }
       else {
         this.uploadSingleImage(result);

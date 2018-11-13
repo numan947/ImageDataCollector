@@ -1,8 +1,6 @@
 page-about {
 
   .image {
-    height: 10vw;
-    width: 10vw;
     border: 2px solid #fff;
     border-radius: 60%;
     box-shadow: 0 0 5px gray;
@@ -13,12 +11,20 @@ page-about {
   }
 
   .circle-pic{
-    width:150px;
-    height:150px;
+    width:200px;
+    height:200px;
     -webkit-border-radius: 60%;
     border-radius: 60%;
     display:block;
     margin:auto;
 
   }
+
+  .center-cropped {
+    height: 10vw;
+    width: 10vw;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
 }
