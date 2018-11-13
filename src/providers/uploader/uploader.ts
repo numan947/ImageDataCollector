@@ -23,8 +23,10 @@ export class UploaderProvider {
   private imageList:Array<ImageModel>;
 
   public batchUploadService:boolean =false;
-  public currentlyBeingUploaded:string = "";
+  private uploadActive:boolean = false;
+
   private masterEndPoint:string = "";
+  private fileTransferObject:FileTransferObject = null;
 
   constructor(
     private fileTransfer:FileTransfer,
@@ -38,10 +40,23 @@ export class UploaderProvider {
     console.log('Hello UploaderProvider Provider');
     this.batchUploadService = false;
     this.imageList = null;
+    this.fileTransferObject = null;
+    this.uploadActive = false;
   }
 
   setImageList(imageList:Array<ImageModel>){
     this.imageList =imageList;
+  }
+
+  getUploadStatus():boolean{
+    return this.uploadActive;
+  }
+
+  abortAllUpload(){
+    if(this.uploadActive) {
+      this.fileTransferObject.abort();
+      console.log("ABORTED!");
+    }
   }
 
 
@@ -51,6 +66,9 @@ export class UploaderProvider {
       this.toast.presentInofrmationToast("No Internet");
       return;
     }
+
+    this.uploadActive = true;
+    this.batchUploadService = true;
 
     this.filesaver.getMasterEndPoint().then((result)=>{
       this.masterEndPoint = result;
@@ -62,6 +80,9 @@ export class UploaderProvider {
 
   public uploadSingleImageNow(image:ImageModel,masterEndPoint:string=null){
     // console.log("INSIDE UPLOAD SINGLE");
+
+    this.uploadActive = true;
+
     let profile:UserProfile = this.personalInfo.personalInfo;
     if(profile===null)
       profile = new UserProfile("Anonymous","","","");
@@ -87,6 +108,9 @@ export class UploaderProvider {
     return this.platform.ready()
       .then(()=>{
       const fileTransferObject = this.fileTransfer.create();
+
+      this.fileTransferObject = fileTransferObject;
+
       return fileTransferObject.upload(image.imagePath,uploadPath,options);
     });
   }
@@ -119,6 +143,9 @@ export class UploaderProvider {
     // console.log("Uploading to...", image.uploadUrl);
     this.platform.ready().then(()=>{
       const fileTransferObject = this.fileTransfer.create();
+
+      this.fileTransferObject = fileTransferObject;
+
       fileTransferObject.upload(image.imagePath,uploadPath,options).then((data)=>{
         this.filesaver.deleteLocalImage(image).then(()=>{
           if(this.imageList){
@@ -133,13 +160,10 @@ export class UploaderProvider {
               this.imageList = null;
           this.nextOne();
         }).catch(()=>{
-          this.currentlyBeingUploaded = "";
           console.log(" batch: error while deleting local image in uploader");
         });
       }).catch((err)=>{
-        this.currentlyBeingUploaded = "";
-        console.log("error while uploading local batch image");
-        this.toast.presentInofrmationToast("Error While Uploading!");
+        this.handleUploadError();
       });
     });
   }
@@ -158,7 +182,6 @@ export class UploaderProvider {
         else this.batchUploadService = false;
       }
       else {
-        this.currentlyBeingUploaded = result.imageName;
         this.uploadSingleImage(result);
       }
     }).catch(err=>{
@@ -166,4 +189,10 @@ export class UploaderProvider {
     });
   }
 
+  private handleUploadError() {
+    this.batchUploadService = false;
+    this.uploadActive = false;
+    console.log("error while uploading local batch image");
+    this.toast.presentInofrmationToast("Error While Uploading!");
+  }
 }

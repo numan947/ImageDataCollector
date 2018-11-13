@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Events} from "ionic-angular";
+import {Events, Platform} from "ionic-angular";
 import {Network} from "@ionic-native/network";
+import {UploaderProvider} from "../uploader/uploader";
 
 /*
   Generated class for the NetworkProvider provider.
@@ -13,8 +14,11 @@ import {Network} from "@ionic-native/network";
 @Injectable()
 export class NetworkProvider {
 
-  constructor(public network:Network) {
+  constructor(
+    public network:Network
+  ) {
     console.log('Hello NetworkProvider Provider');
+
   }
   isConnected(){
     console.log(this.network.type);

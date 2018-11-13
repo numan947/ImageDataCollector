@@ -247,7 +247,7 @@ export class HomePage {
       return;
     }
     else if (this.platform.is("cordova")) {
-      if (this.networkProvider.isConnected()) {
+      if (!(this.uploader.getUploadStatus())&&this.networkProvider.isConnected()) {
         let temp: ImageModel = new ImageModel("SIMPLE_IMAGE_COLLECTOR_APP_" + new Date() + ".jpg", this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
@@ -264,7 +264,10 @@ export class HomePage {
         });
 
       } else {
-        this.alertProvider.showInformationAlert("No Internet! Saving Locally!");
+        if(this.uploader.getUploadStatus())
+          this.alertProvider.showInformationAlert("Upload is active! Queued!");
+        else
+          this.alertProvider.showInformationAlert("No Internet! Saving Locally!");
         this.platform.ready().then(() => {
           this.uploadButtonDisabled = true;
           this.storeButtonDisabled = true;

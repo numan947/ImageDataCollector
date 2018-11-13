@@ -5,6 +5,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import {BackgroundProvider} from "../providers/background/background";
+import {Network} from "@ionic-native/network";
+import {UploaderProvider} from "../providers/uploader/uploader";
 
 @Component({
   templateUrl: 'app.html'
@@ -18,7 +20,9 @@ export class MyApp {
               public splashScreen: SplashScreen,
               public app:App,
                public backgorundProvider:BackgroundProvider,
-              public toastCtrl:ToastController
+              public toastCtrl:ToastController,
+               private network:Network,
+               private uploader:UploaderProvider
               ) {
     platform.ready().then(() => {
 
@@ -27,6 +31,10 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
       // Offline event
+      this.network.onDisconnect().subscribe(()=>{
+        console.log("Internet Disconnected! Aborting All Uploads!");
+        this.uploader.abortAllUpload();
+      });
 
       if(platform.is('cordova')) {
       statusBar.backgroundColorByHexString('#ffffff');
