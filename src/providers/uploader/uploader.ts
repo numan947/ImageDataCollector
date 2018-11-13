@@ -8,6 +8,8 @@ import {FileSaverProvider} from "../file-saver/file-saver";
 import {P} from "@angular/core/src/render3";
 import {PersonalInfoProvider} from "../personal-info/personal-info";
 import {UserProfile} from "../../app/models/UserProfile";
+import {NetworkProvider} from "../network/network";
+import {ToastProvider} from "../toast/toast";
 
 /*
   Generated class for the UploaderProvider provider.
@@ -29,7 +31,9 @@ export class UploaderProvider {
     private platform:Platform,
     private background:BackgroundProvider,
     private filesaver:FileSaverProvider,
-    private personalInfo:PersonalInfoProvider
+    private personalInfo:PersonalInfoProvider,
+    private networkProvider: NetworkProvider,
+    private toast:ToastProvider
   ) {
     console.log('Hello UploaderProvider Provider');
     this.batchUploadService = false;
@@ -42,6 +46,12 @@ export class UploaderProvider {
 
 
   uploadAll(){
+    if (!this.networkProvider.isConnected()){
+      this.batchUploadService = false;
+      this.toast.presentInofrmationToast("No Internet");
+      return;
+    }
+
     this.filesaver.getMasterEndPoint().then((result)=>{
       this.masterEndPoint = result;
       this.nextOne();
@@ -68,7 +78,7 @@ export class UploaderProvider {
         "userphone":profile.phone,
         "userorganization":profile.organization
       },
-      headers:{}
+      headers:{},
     };
     let uploadPath:string = masterEndPoint;
     if(!uploadPath)
@@ -129,6 +139,7 @@ export class UploaderProvider {
       }).catch((err)=>{
         this.currentlyBeingUploaded = "";
         console.log("error while uploading local batch image");
+        this.toast.presentInofrmationToast("Error While Uploading!");
       });
     });
   }

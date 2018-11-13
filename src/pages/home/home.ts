@@ -252,17 +252,19 @@ export class HomePage {
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
         this.loadingScreen.showGeneralUplaodingScreen();
-        this.uploader.uploadSingleImageNow(temp,this.masterEndPoint).then(() => {
+        this.uploader.uploadSingleImageNow(temp,this.masterEndPoint)
+          .then(() => {
           this.loadingScreen.dismissLoading();
           this.toastProvider.presentInofrmationToast("Successfully Uploaded");
-        }).catch(() => {
+        })
+          .catch(() => {
           this.loadingScreen.dismissLoading();
-          this.toastProvider.presentInofrmationToast("Upload Failed! Saving Locally....");
+          this.alertProvider.showInformationAlert("Upload Failed! Saving Locally....");
           this.fileSaver.saveLocalImage(this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
         });
 
       } else {
-        this.alertProvider.showInformationAlert("Cannot Upload To Storage! Saving Locally!");
+        this.alertProvider.showInformationAlert("No Internet! Saving Locally!");
         this.platform.ready().then(() => {
           this.uploadButtonDisabled = true;
           this.storeButtonDisabled = true;
@@ -298,12 +300,14 @@ export class HomePage {
     this.GENERALMODE = true;
     this.IMAGECAPTUREDMODE = false;
     this.capturedImage = null;
+    this.selectedLabel=null;
   }
 
 
   setImageCaptureMode() {
     this.IMAGECAPTUREDMODE = true;
     this.GENERALMODE = false;
+    this.selectedLabel=null;
   }
 
 
