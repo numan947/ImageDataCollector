@@ -50,7 +50,9 @@ export class HomePage {
 
   private allLabels: Array<LabelModel> = null;
 
-  private permissionsNeeded:any = null;
+  private permissionsNeeded: any = null;
+
+  private masterEndPoint: string;
 
 
   CAMERAOPTIONS: CameraOptions = {
@@ -61,7 +63,7 @@ export class HomePage {
     targetWidth: 720,
     targetHeight: 720,
     sourceType: this.camera.PictureSourceType.CAMERA,
-    correctOrientation:true
+    correctOrientation: true
   };
 
 
@@ -78,8 +80,8 @@ export class HomePage {
     private alertProvider: AlertProvider,
     private backgroundProvider: BackgroundProvider,
     private loadingScreen: LoadingScreenProvider,
-    private diagnostic:Diagnostic,
-    private uploader:UploaderProvider
+    private diagnostic: Diagnostic,
+    private uploader: UploaderProvider
   ) {
     this.permissionsNeeded = [];
     this.permissionsNeeded.push(this.diagnostic.permission.CAMERA);
@@ -92,40 +94,46 @@ export class HomePage {
 
     this.loadingScreen.showGeneralLoadingScreen();
     this.platform.ready().then(() => {
-      this.fileSaver.getLabels().then(result => {
-        console.log(result);
-        if (!result) {
-          this.allLabels = null;
-        }else {
-          this.allLabels = result;
-          console.log(this.allLabels);
-        }
+
+
+      Promise.all([this.fileSaver.getLabels(), this.fileSaver.getMasterEndPoint()]).then(values => {
+        this.allLabels = values[0];
+        this.masterEndPoint = values[1];
+
+        this.loadingScreen.dismissLoading();
         this.fileSaver.labelsChanged = false;
         this.loadingScreen.dismissLoading();
-
-        if(!this.allLabels){
-          let alertForUpdatingSettings:any={
-            title: "<h6>YOU MUST ADD LABELS FIRST</h6>",
-            message:"<img ion-text src='assets/imgs/doctor_strange.png'>",
-            buttons:[
-              {
-                text:"Teach Me!",
-                handler:()=>{
-                  this.navCtrl.push(LabelSettingsPage);
-                }
-              },
-              {
-                text:"Later",
-                handler:()=>{
-
-                }
-              }
-            ]
-          };
-          this.alertProvider.showTextBoxAlert(alertForUpdatingSettings);
+        if (!this.allLabels) {
+          this.showAddLabelsAlert();
         }
+
+      }).catch(err => {
+        this.toastProvider.presentInofrmationToast("Error While Fetching Data!");
+        this.loadingScreen.dismissLoading();
       });
     });
+  }
+
+  showAddLabelsAlert() {
+    let alertForUpdatingSettings: any = {
+      title: "<h6>YOU MUST ADD LABELS FIRST</h6>",
+      message: "<img ion-text src='assets/imgs/doctor_strange.png'>",
+      buttons: [
+        {
+          text: "Teach Me!",
+          handler: () => {
+            this.navCtrl.push(LabelSettingsPage);
+          }
+        },
+        {
+          text: "Later",
+          handler: () => {
+
+          }
+        }
+      ]
+    };
+    this.alertProvider.showTextBoxAlert(alertForUpdatingSettings);
   }
 
 
@@ -138,8 +146,6 @@ export class HomePage {
   }
 
 
-
-
   showSavedImages() {
     console.log("Inside showSavedImages");
 
@@ -147,7 +153,7 @@ export class HomePage {
       this.platform.ready().then(() => {
         this.fileSaver.getLocalImages().then(result => {
           // console.log(Boolean(Object.keys(result)[0]));
-          if(result) {
+          if (result) {
             if (Boolean(Object.keys(result)[0])) {
               this.loadingScreen.showPageChangeLoadingScreen();
               this.navCtrl.push(ImageListPage, {data: result});
@@ -182,8 +188,7 @@ export class HomePage {
   }
 
 
-
-  private getPictureFromCamera(){
+  private getPictureFromCamera() {
     this.camera.getPicture(this.CAMERAOPTIONS).then(imagePath => {
       this.capturedImage = imagePath;
       this.storeButtonDisabled = false;
@@ -199,35 +204,34 @@ export class HomePage {
   }
 
 
-  getPermissions(permToRequest){
-    this.diagnostic.requestRuntimePermissions(permToRequest).then(()=>{
+  getPermissions(permToRequest) {
+    this.diagnostic.requestRuntimePermissions(permToRequest).then(() => {
       this.captureImage();
-    }).catch((error)=>{
-      this.alertProvider.showInformationAlert("Error While Requesting Permissions "+error);
+    }).catch((error) => {
+      this.alertProvider.showInformationAlert("Error While Requesting Permissions " + error);
     });
   }
-
 
 
   captureImage() {
     console.log("Inside Capture Image");
 
     if (this.platform.is('cordova')) {
-      this.diagnostic.getPermissionsAuthorizationStatus(this.permissionsNeeded).then((statuses)=>{
-        let permToRequest:any =[];
-        for(let perm in statuses){
-          if(statuses[perm]!=this.diagnostic.permissionStatus.GRANTED){
+      this.diagnostic.getPermissionsAuthorizationStatus(this.permissionsNeeded).then((statuses) => {
+        let permToRequest: any = [];
+        for (let perm in statuses) {
+          if (statuses[perm] != this.diagnostic.permissionStatus.GRANTED) {
             permToRequest.push(perm);
           }
         }
 
-        if(permToRequest.length>0){
+        if (permToRequest.length > 0) {
           this.getPermissions(permToRequest);
-        }else{
+        } else {
           this.getPictureFromCamera();
         }
-      }).catch((error)=>{
-        this.alertProvider.showInformationAlert("Error While Permission Check "+error);
+      }).catch((error) => {
+        this.alertProvider.showInformationAlert("Error While Permission Check " + error);
       });
     } else {
       this.storeButtonDisabled = false;
@@ -244,14 +248,14 @@ export class HomePage {
     }
     else if (this.platform.is("cordova")) {
       if (this.networkProvider.isConnected()) {
-        let temp:ImageModel = new ImageModel(new Date()+".jpg",this.capturedImage,this.selectedLabel.labelName,this.selectedLabel.labelUrl);
+        let temp: ImageModel = new ImageModel("SIMPLE_IMAGE_COLLECTOR_APP_" + new Date() + ".jpg", this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);
         this.uploadButtonDisabled = true;
         this.storeButtonDisabled = true;
         this.loadingScreen.showGeneralUplaodingScreen();
-        this.uploader.uploadSingleImageNow(temp).then(()=>{
+        this.uploader.uploadSingleImageNow(temp,this.masterEndPoint).then(() => {
           this.loadingScreen.dismissLoading();
           this.toastProvider.presentInofrmationToast("Successfully Uploaded");
-        }).catch(()=>{
+        }).catch(() => {
           this.loadingScreen.dismissLoading();
           this.toastProvider.presentInofrmationToast("Upload Failed! Saving Locally....");
           this.fileSaver.saveLocalImage(this.capturedImage, this.selectedLabel.labelName, this.selectedLabel.labelUrl);

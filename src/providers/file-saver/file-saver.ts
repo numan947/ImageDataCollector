@@ -17,7 +17,7 @@ import {LabelModel} from "../../app/models/LabelModel";
 const GENERIC_SAVE_FILE_NAME = "SIMPLE_IMAGE_COLLECTOR_APP_";
 const SAVED_FILES = "SAVED_FILES_FOR_UPLOADING_LATER";
 const SAVED_LABELS = "SAVED_LABELS_FOR_UPLOADING_IMAGES";
-
+const MASTER_END_POINT = "MASTER_END_POINT_FOR_ALL_IMAGES";
 
 declare var cordova:any;
 @Injectable()
@@ -30,6 +30,14 @@ export class FileSaverProvider {
               private backgroundProvider:BackgroundProvider,
               private storage:Storage) {
     console.log('Hello FileSaverProvider Provider');
+  }
+
+
+  public setMasterEndPoint(masterEndPoint:string){
+    return this.storage.set(MASTER_END_POINT,masterEndPoint);
+  }
+  public getMasterEndPoint(){
+    return this.storage.get(MASTER_END_POINT);
   }
 
 

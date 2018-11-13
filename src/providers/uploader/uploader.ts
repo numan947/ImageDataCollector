@@ -22,6 +22,7 @@ export class UploaderProvider {
 
   public batchUploadService:boolean =false;
   public currentlyBeingUploaded:string = "";
+  private masterEndPoint:string = "";
 
   constructor(
     private fileTransfer:FileTransfer,
@@ -41,9 +42,15 @@ export class UploaderProvider {
 
 
   uploadAll(){
-    this.nextOne();
+    this.filesaver.getMasterEndPoint().then((result)=>{
+      this.masterEndPoint = result;
+      this.nextOne();
+    }).catch(()=>{
+      console.log("error while fetching master endpoint");
+    });
   }
-  public uploadSingleImageNow(image:ImageModel){
+
+  public uploadSingleImageNow(image:ImageModel,masterEndPoint:string=null){
     // console.log("INSIDE UPLOAD SINGLE");
     let profile:UserProfile = this.personalInfo.personalInfo;
     if(profile===null)
@@ -63,11 +70,14 @@ export class UploaderProvider {
       },
       headers:{}
     };
+    let uploadPath:string = masterEndPoint;
+    if(!uploadPath)
+      uploadPath = image.uploadUrl;
     // console.log("Uploading to...", image.uploadUrl);
     return this.platform.ready()
       .then(()=>{
       const fileTransferObject = this.fileTransfer.create();
-      return fileTransferObject.upload(image.imagePath,image.uploadUrl,options);
+      return fileTransferObject.upload(image.imagePath,uploadPath,options);
     });
   }
 
@@ -92,10 +102,14 @@ export class UploaderProvider {
       },
       headers:{}
     };
+
+    let uploadPath:string = this.masterEndPoint;
+    if(!uploadPath)
+      uploadPath = image.uploadUrl;
     // console.log("Uploading to...", image.uploadUrl);
     this.platform.ready().then(()=>{
       const fileTransferObject = this.fileTransfer.create();
-      fileTransferObject.upload(image.imagePath,image.uploadUrl,options).then((data)=>{
+      fileTransferObject.upload(image.imagePath,uploadPath,options).then((data)=>{
         this.filesaver.deleteLocalImage(image).then(()=>{
           if(this.imageList){
             if(this.imageList.length){

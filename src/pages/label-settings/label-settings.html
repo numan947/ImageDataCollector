@@ -14,6 +14,15 @@
 
 
 <ion-content padding>
+
+  <ion-item margin-bottom="0.5vh" >
+    <ion-label floating>Common Endpoint</ion-label>
+    <ion-input type="url" [class]="masterEditLabelStyle" [(ngModel)]="masterEndPoint"></ion-input>
+  </ion-item>
+  <div padding>
+    <button ion-button outline #submitbutton (click)="saveMasterEndPoint()">{{masterButtonText}}</button>
+  </div>
+
   <div *ngIf="allLabels">
     <ion-list  *ngFor="let label of allLabels">
       <ion-item>
@@ -24,7 +33,6 @@
       </ion-item>
     </ion-list>
   </div>
-
   <div *ngIf="!allLabels">
     <ion-slides>
       <ion-slide>
@@ -34,7 +42,6 @@
       </ion-slide>
     </ion-slides>
   </div>
-
   <ion-fab right bottom>
     <button ion-fab color="accent" (click)="addNewLabel()"><ion-icon name="add"></ion-icon></button>
   </ion-fab>
