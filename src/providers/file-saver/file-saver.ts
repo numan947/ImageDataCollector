@@ -18,6 +18,7 @@ const GENERIC_SAVE_FILE_NAME = "SIMPLE_IMAGE_COLLECTOR_APP_";
 const SAVED_FILES = "SAVED_FILES_FOR_UPLOADING_LATER";
 const SAVED_LABELS = "SAVED_LABELS_FOR_UPLOADING_IMAGES";
 
+
 declare var cordova:any;
 @Injectable()
 export class FileSaverProvider {
@@ -99,8 +100,9 @@ export class FileSaverProvider {
 
   public getNextImageFile(){
     return this.storage.get(SAVED_FILES).then(result=>{
-      if(result)
+      if(result) {
         return result[0];
+      }
       else
         return null;
     }).catch(err=>{

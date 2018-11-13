@@ -73,12 +73,10 @@
 
     <ion-card class="page-home ion-card">
       <ion-card-header>Captured Image</ion-card-header>
-      <ion-card-content><img src="{{capturedImage}}"></ion-card-content>
-
       <ion-list>
         <ion-item class="page-home ItemSpace">
           <ion-label>Label</ion-label>
-          <ion-select [(ngModel)]="selectedLabel">
+          <ion-select [(ngModel)]="selectedLabel" placeholder="N/A">
             <ion-option *ngFor="let label of allLabels" [value] = "label" >{{label.labelName}}</ion-option>
           </ion-select>
         </ion-item>
@@ -125,6 +123,8 @@
           </button>
         </div>
       </div>
+
+      <ion-card-content><img src="{{capturedImage}}" style="display: block;margin: auto;"></ion-card-content>
     </ion-card>
   </ion-list>
 

@@ -58,6 +58,7 @@ export class ImageListPage {
   startUploadService(){
     this.updateImageListOfUploader();
     this.uploader.batchUploadService = true;
+    this.uploader.setImageList(this.imageList);
     this.uploader.uploadAll();
   }
 

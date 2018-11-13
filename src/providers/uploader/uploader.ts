@@ -21,6 +21,7 @@ export class UploaderProvider {
   private imageList:Array<ImageModel>;
 
   public batchUploadService:boolean =false;
+  public currentlyBeingUploaded:string = "";
 
   constructor(
     private fileTransfer:FileTransfer,
@@ -52,11 +53,19 @@ export class UploaderProvider {
       fileName: image.imageName,
       chunkedMode:false,
       mimeType: "multipart/form-data",
-      params : {'fileName': image.imageName,'label':image.imageLabel},
-      headers:{"username":profile.userName,"useremail":profile.email,"userphone":profile.phone,"userorganization":profile.organization}
+      params : {
+        'fileName': image.imageName,
+        'label':image.imageLabel,
+        "username":profile.userName,
+        "useremail":profile.email,
+        "userphone":profile.phone,
+        "userorganization":profile.organization
+      },
+      headers:{}
     };
     // console.log("Uploading to...", image.uploadUrl);
-    return this.platform.ready().then(()=>{
+    return this.platform.ready()
+      .then(()=>{
       const fileTransferObject = this.fileTransfer.create();
       return fileTransferObject.upload(image.imagePath,image.uploadUrl,options);
     });
@@ -73,25 +82,38 @@ export class UploaderProvider {
       fileName: image.imageName,
       mimeType: "multipart/form-data",
       chunkedMode:false,
-      params : {'fileName': image.imageName,'label':image.imageLabel},
-      headers:{"username":profile.userName,"useremail":profile.email,"userphone":profile.phone,"userorganization":profile.organization}
+      params : {
+        'fileName': image.imageName,
+        'label':image.imageLabel,
+        "username":profile.userName,
+        "useremail":profile.email,
+        "userphone":profile.phone,
+        "userorganization":profile.organization
+      },
+      headers:{}
     };
     // console.log("Uploading to...", image.uploadUrl);
     this.platform.ready().then(()=>{
       const fileTransferObject = this.fileTransfer.create();
       fileTransferObject.upload(image.imagePath,image.uploadUrl,options).then((data)=>{
         this.filesaver.deleteLocalImage(image).then(()=>{
-          this.nextOne();
           if(this.imageList){
             if(this.imageList.length){
               let idx = this.imageList.findIndex(elem=> elem.imageName===image.imageName);
               this.imageList.splice(idx,1);
             }
           }
+
+          if(this.imageList)
+            if(!this.imageList.length)
+              this.imageList = null;
+          this.nextOne();
         }).catch(()=>{
+          this.currentlyBeingUploaded = "";
           console.log(" batch: error while deleting local image in uploader");
         });
       }).catch((err)=>{
+        this.currentlyBeingUploaded = "";
         console.log("error while uploading local batch image");
       });
     });
@@ -110,8 +132,10 @@ export class UploaderProvider {
         }
         else this.batchUploadService = false;
       }
-      else
+      else {
+        this.currentlyBeingUploaded = result.imageName;
         this.uploadSingleImage(result);
+      }
     }).catch(err=>{
       console.log("THis error shouldn't exist")
     });

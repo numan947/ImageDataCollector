@@ -27,16 +27,18 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list *ngIf="imageList">
-    <ion-item *ngFor="let item of imageList; let idx = index" >
+  <ion-list *ngIf="imageList && imageList.length">
+    <ion-item *ngFor="let item of imageList; let idx = index">
+
       <ion-thumbnail item-start>
         <img src="{{item.imagePath}}">
       </ion-thumbnail>
       <h2>{{item.imageLabel}}</h2>
       <p>{{item.imageName}}</p>
       <button ion-button clear item-end color="danger" (click)="deleteItem(item)">Delete</button>
+
     </ion-item>
   </ion-list>
-  <img *ngIf="!imageList" src="assets/imgs/gone.png">
+  <img *ngIf="!(imageList)||!(imageList.length)" src="assets/imgs/gone.png">
 
 </ion-content>

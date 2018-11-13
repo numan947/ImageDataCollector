@@ -189,7 +189,7 @@ export class HomePage {
       this.storeButtonDisabled = false;
       this.uploadButtonDisabled = false;
       this.setImageCaptureMode();
-      this.toastProvider.presentInofrmationToast(this.capturedImage);
+      //this.toastProvider.presentInofrmationToast(this.capturedImage);
     }).catch(err => {
       console.log("WEIRD ERROR HAPPENED");
       if (!(err == "No Image Selected")) {
@@ -232,7 +232,7 @@ export class HomePage {
     } else {
       this.storeButtonDisabled = false;
       this.uploadButtonDisabled = false;
-      this.capturedImage = "assets/mock-images/mock_image.jpg";
+      this.capturedImage = "assets/mock-images/portrait.png";
       this.setImageCaptureMode();
     }
   }
