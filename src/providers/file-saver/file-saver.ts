@@ -121,8 +121,9 @@ export class FileSaverProvider {
 
 
 
-
-
+  public setLabels(allLabels:LabelModel[]){
+    return this.storage.set(SAVED_LABELS,allLabels);
+  }
 
   public getLabels(){
     return this.storage.get(SAVED_LABELS);

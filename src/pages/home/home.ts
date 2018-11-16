@@ -104,9 +104,28 @@ export class HomePage {
         this.fileSaver.labelsChanged = false;
         this.loadingScreen.dismissLoading();
         if (!this.allLabels) {
-          this.showAddLabelsAlert();
+          this.loadingScreen.showGeneralLoadingScreen("Setting Up......");
+          Promise.all([
+          this.fileSaver.setLabels([new  LabelModel("0",""),
+            new  LabelModel("1",""),
+            new  LabelModel("2",""),
+            new  LabelModel("3",""),
+            new  LabelModel("4",""),
+            new  LabelModel("5",""),
+            new  LabelModel("6",""),
+            new  LabelModel("7",""),
+            new  LabelModel("8",""),
+            new  LabelModel("9","")
+          ]),
+            this.fileSaver.setMasterEndPoint("http://103.227.177.208:8888/upload")]).then(()=>{
+            this.loadingScreen.dismissLoading();
+            this.loadLabels();
+            this.toastProvider.presentInofrmationToast("Setup Complete!");
+          }).catch(()=>{
+            this.toastProvider.presentInofrmationToast("Error while setup!");
+          });
+          // this.showAddLabelsAlert();
         }
-
       }).catch(err => {
         this.toastProvider.presentInofrmationToast("Error While Fetching Data!");
         this.loadingScreen.dismissLoading();
