@@ -104,6 +104,16 @@
         </div>
         <div class="col col-25">
           <button
+            ion-button icon-start icon-only clear
+            float-start=""
+            (click)="cloudClassify()"
+            [disabled] ="uploadButtonDisabled"
+          >
+            <ion-icon name="help-circle"></ion-icon>
+          </button>
+        </div>
+        <div class="col col-25">
+          <button
             ion-button icon-end icon-only clear
             float-end
             (click)="captureImage()"

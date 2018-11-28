@@ -164,6 +164,34 @@ export class HomePage {
 
   }
 
+  cloudClassify() {
+    console.log("Inside Cloud Classify");
+    if (this.platform.is("cordova")
+      && this.networkProvider.isConnected()) {
+      let temp: ImageModel = new ImageModel(
+        "SIMPLE_IMAGE_COLLECTOR_APP_" + new Date() + ".jpg",
+        this.capturedImage,
+        "NO_LABEL",
+        "NOURL");
+      this.uploadButtonDisabled = true;
+      this.storeButtonDisabled = true;
+      this.loadingScreen.showGeneralUplaodingScreen();
+      this.uploader.uploadSingleImageNow(temp, this.masterEndPoint.substr(0,this.masterEndPoint.lastIndexOf('/',0))+"/classify", true)
+        .then((response) => {
+          this.loadingScreen.dismissLoading();
+          this.toastProvider.presentInofrmationToast("Successfully Uploaded");
+          this.alertProvider.showInformationAlert(response.response.toString());
+        })
+        .catch((err) => {
+          this.loadingScreen.dismissLoading();
+          this.alertProvider.showInformationAlert("Upload Failed!");
+          this.uploadButtonDisabled = false;
+          this.storeButtonDisabled = false;
+        });
+    } else {
+      this.alertProvider.showInformationAlert("Will Upload to RemoteStorage");
+    }
+  }
 
   showSavedImages() {
     console.log("Inside showSavedImages");

@@ -81,10 +81,11 @@ export class UploaderProvider {
     });
   }
 
-  public uploadSingleImageNow(image:ImageModel,masterEndPoint:string=null){
+  public uploadSingleImageNow(image:ImageModel,masterEndPoint:string=null,classificationTask:boolean = false){
     // console.log("INSIDE UPLOAD SINGLE");
 
-    this.uploadActive = true;
+    if(!classificationTask)
+      this.uploadActive = true;
 
     let profile:UserProfile = this.personalInfo.personalInfo;
     if(profile===null)
